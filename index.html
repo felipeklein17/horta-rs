@@ -74,16 +74,6 @@
   nav button:hover { background: rgba(255,255,255,0.1); color: white; }
   nav button.active { background: var(--verde-claro); color: white; }
 
-  .region-selector { display: flex; align-items: center; gap: 8px; }
-
-  .region-selector select {
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-    color: white; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem;
-    cursor: pointer; font-family: 'DM Sans', sans-serif;
-  }
-
-  .region-selector select option { background: var(--verde-escuro); color: white; }
-
   main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
 
   .tab-content { display: none; }
@@ -343,7 +333,6 @@
     .logo-text { font-size: 1rem; }
     nav button span.nav-label { display: none; }
     .form-row { grid-template-columns: 1fr; }
-    .region-selector select { max-width: 160px; }
   }
 </style>
 </head>
@@ -362,23 +351,6 @@
       <button class="active" onclick="trocarAba('calendario', this)">📅 <span class="nav-label">Calendário</span></button>
       <button onclick="trocarAba('registros', this)">📋 <span class="nav-label">Meus Plantios</span></button>
     </nav>
-    <div class="region-selector">
-      <select id="regiaoSelect" onchange="trocarRegiao(this.value)">
-        <optgroup label="Rio Grande do Sul">
-          <option value="vale-taquari" selected>Vale do Taquari</option>
-          <option value="serra-gaucha">Serra Gaúcha / Planalto</option>
-          <option value="litoral">Litoral / Zona Sul</option>
-          <option value="metade-sul">Metade Sul / Campanha</option>
-          <option value="noroeste">Noroeste RS</option>
-        </optgroup>
-        <optgroup label="Outros estados">
-          <option value="sc-litoral">SC – Litoral</option>
-          <option value="sc-planalto">SC – Planalto Serrano</option>
-          <option value="pr-curitiba">PR – Curitiba / Serra</option>
-          <option value="sp-interior">SP – Interior</option>
-        </optgroup>
-      </select>
-    </div>
   </div>
 </header>
 
@@ -488,210 +460,197 @@ function salvarNoStorage(registros) {
   }
 }
 
-const REGIOES = {
-  'vale-taquari': { nome: 'Vale do Taquari', desc: 'clima subtropical úmido' },
-  'serra-gaucha': { nome: 'Serra Gaúcha / Planalto', desc: 'clima subtropical de altitude' },
-  'litoral': { nome: 'Litoral / Zona Sul', desc: 'clima subtropical litorâneo' },
-  'metade-sul': { nome: 'Metade Sul / Campanha', desc: 'clima temperado / invernos mais rigorosos' },
-  'noroeste': { nome: 'Noroeste RS', desc: 'clima subtropical quente' },
-  'sc-litoral': { nome: 'SC – Litoral', desc: 'clima subtropical litorâneo' },
-  'sc-planalto': { nome: 'SC – Planalto Serrano', desc: 'clima subtropical de altitude' },
-  'pr-curitiba': { nome: 'PR – Curitiba / Serra', desc: 'clima subtropical de altitude' },
-  'sp-interior': { nome: 'SP – Interior', desc: 'clima tropical de altitude' }
-};
-
 const CULTURAS_BASE = [
   { id: 'alface', nome: 'Alface', emoji: '🥬', cat: 'hortaliças',
-    meses: ['PC','PC','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [60, 75], espaco: '25×25cm', profundidade: '0.5cm',
-    dicas: 'Prefere temperaturas amenas entre 15°C e 20°C. No verão, plante variedades mais tolerantes ao calor como alface crespa. Rega diária essencial.',
+    meses: ['P','P','P','P','P','P','P','P','P','P','P','P'],
+    dias_colheita: [50, 80], espaco: '25×25cm', profundidade: '0.5cm',
+    dicas: 'Prefere temperaturas amenas entre 15°C e 20°C. No verão, plante variedades mais tolerantes ao calor como a alface crespa; no inverno, variedades de cabeça como a americana. Plantio possível o ano todo na região Sul (Embrapa).',
     variedades: 'Crespa, Lisa, Americana, Mimosa, Roxa' },
   { id: 'tomate', nome: 'Tomate', emoji: '🍅', cat: 'legumes',
-    meses: ['X','X','X','X','X','X','P','P','P','P','X','X'],
-    dias_colheita: [90, 120], espaco: '60×60cm', profundidade: '1cm',
-    dicas: 'Plante em local com bastante sol. Tutor (estaca) é essencial. Adubação com potássio melhora o sabor. Evite excesso de água nas folhas.',
+    meses: ['P','P','X','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [90, 120], espaco: '100×50cm', profundidade: '1cm',
+    dicas: 'Plante em local com bastante sol. Tutor (estaca) é essencial. Adubação com potássio melhora o sabor. Evite excesso de água nas folhas. Época de plantio na região Sul: agosto a janeiro, podendo se estender até fevereiro em locais mais quentes.',
     variedades: 'Italiano, Cereja, Caqui, Santa Cruz' },
   { id: 'cenoura', nome: 'Cenoura', emoji: '🥕', cat: 'legumes',
-    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
-    dias_colheita: [80, 100], espaco: '5×25cm', profundidade: '1cm',
-    dicas: 'Solo profundo e bem preparado, sem pedras. Desbaste importante quando as plantas têm 5cm. Não transplante, semeie direto.',
+    meses: ['P','P','P','P','P','P','P','P','X','X','P','P'],
+    dias_colheita: [80, 110], espaco: '20×5cm', profundidade: '1cm',
+    dicas: 'Solo profundo e bem preparado, sem pedras. Desbaste importante quando as plantas têm 5cm. Não transplante, semeie direto. Época de plantio: fevereiro a agosto (cultivo de inverno) e novembro a janeiro (cultivo de verão).',
     variedades: 'Nantes, Brasília, Alvorada' },
-  { id: 'beterraba', nome: 'Beterraba', emoji: '🫒', cat: 'legumes',
-    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
-    dias_colheita: [60, 80], espaco: '10×25cm', profundidade: '2cm',
-    dicas: 'Tolera leve geada. Solo profundo e fértil. Aproveite as folhas na culinária também! Desbaste deixando uma planta a cada 10cm.',
+  { id: 'beterraba', nome: 'Beterraba', emoji: '🟣', cat: 'legumes',
+    meses: ['P','P','P','P','P','X','X','P','P','P','P','P'],
+    dias_colheita: [60, 80], espaco: '20×10cm', profundidade: '2cm',
+    dicas: 'Tolera leve geada, mas evite o pico do inverno (junho-julho) em áreas mais frias do Vale. Solo profundo e fértil. Aproveite as folhas na culinária também! Desbaste deixando uma planta a cada 10cm. Embrapa indica plantio o ano todo na região Sul.',
     variedades: 'Tall Top Early Wonder, Itapuã, Formanova' },
   { id: 'abobrinha', nome: 'Abobrinha', emoji: '🥒', cat: 'legumes',
-    meses: ['X','X','P','P','X','X','X','X','P','P','P','X'],
-    dias_colheita: [45, 65], espaco: '80×80cm', profundidade: '2cm',
-    dicas: 'Colha quando jovem (15-20cm) para melhor sabor e para estimular mais produção. Planta de ciclo curto e muito produtiva.',
+    meses: ['P','P','P','P','P','X','X','X','P','P','P','P'],
+    dias_colheita: [45, 65], espaco: '150×100cm', profundidade: '2cm',
+    dicas: 'Colha quando jovem (15-20cm) para melhor sabor e para estimular mais produção. Planta de ciclo curto e muito produtiva. Época de plantio: setembro a maio, evitando o pico do inverno (Embrapa, região Sul).',
     variedades: 'Caserta, Menina Brasileira, Italiana' },
   { id: 'abobora', nome: 'Abóbora', emoji: '🎃', cat: 'legumes',
-    meses: ['X','X','P','P','X','X','X','X','X','P','P','X'],
-    dias_colheita: [90, 120], espaco: '2×2m', profundidade: '3cm',
-    dicas: 'Precisa de muito espaço. Plante 3-4 sementes por cova e faça desbaste. O fruto está maduro quando o talo secar. Ótima produção no RS.',
+    meses: ['P','X','X','X','X','X','X','X','X','P','P','P'],
+    dias_colheita: [90, 120], espaco: '250×250cm', profundidade: '3cm',
+    dicas: 'Precisa de muito espaço. Plante 3-4 sementes por cova e faça desbaste. O fruto está maduro quando o talo secar. Época de plantio: outubro a fevereiro (Embrapa, região Sul).',
     variedades: 'Cabotiá, Moranga, Paulista, Porquinho' },
-  { id: 'moranga', nome: 'Moranga', emoji: '🍊', cat: 'legumes',
-    meses: ['X','X','P','P','X','X','X','X','X','P','P','X'],
-    dias_colheita: [100, 130], espaco: '2×2.5m', profundidade: '3cm',
-    dicas: 'Similar à abóbora, porém frutos maiores e mais doces. Plante em local ensolarado com solo rico. Rega na base, nunca nas folhas.',
+  { id: 'moranga', nome: 'Moranga', emoji: '🟠', cat: 'legumes',
+    meses: ['X','X','X','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [100, 130], espaco: '200×200cm', profundidade: '3cm',
+    dicas: 'Similar à abóbora, porém frutos maiores e mais doces. Plante em local ensolarado com solo rico. Rega na base, nunca nas folhas. Época de plantio: agosto a dezembro (Embrapa, região Sul).',
     variedades: 'Exposição, Coroa, Chapéu-de-bispo' },
   { id: 'pepino', nome: 'Pepino', emoji: '🥒', cat: 'legumes',
-    meses: ['X','X','P','P','X','X','X','X','P','P','P','X'],
-    dias_colheita: [45, 60], espaco: '30×80cm', profundidade: '2cm',
-    dicas: 'Trepadeira que aprecia tutoramento. Rega regular e abundante. Colha frequentemente para estimular produção. Evite solo encharcado.',
+    meses: ['P','P','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [45, 60], espaco: '100×50cm', profundidade: '2cm',
+    dicas: 'Trepadeira que aprecia tutoramento. Rega regular e abundante. Colha frequentemente para estimular produção. Evite solo encharcado. Época de plantio: setembro a fevereiro (Embrapa, região Sul).',
     variedades: 'Caipira, Japonês, Picles, Aodai' },
   { id: 'pimentao', nome: 'Pimentão', emoji: '🫑', cat: 'legumes',
-    meses: ['X','X','X','X','X','X','P','P','P','X','X','X'],
-    dias_colheita: [90, 120], espaco: '50×50cm', profundidade: '0.5cm',
-    dicas: 'Plante as mudas quando a temperatura noturna estiver acima de 15°C. Adubação regular com fósforo e potássio. Colha verde ou espere amadurecer.',
+    meses: ['P','P','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [100, 120], espaco: '100×50cm', profundidade: '0.5cm',
+    dicas: 'Plante as mudas quando a temperatura noturna estiver acima de 15°C. Adubação regular com fósforo e potássio. Colha verde ou espere amadurecer. Época de plantio: setembro a fevereiro (Embrapa, região Sul).',
     variedades: 'Vermelho, Amarelo, Verde, Colorido' },
   { id: 'berinjela', nome: 'Berinjela', emoji: '🍆', cat: 'legumes',
-    meses: ['X','X','X','X','X','X','P','P','P','X','X','X'],
-    dias_colheita: [90, 120], espaco: '70×70cm', profundidade: '0.5cm',
-    dicas: 'Cultura quente, não tolera geada. Plante mudas. Colha quando o fruto estiver brilhoso — depois fica amargo. Boa produção no RS de setembro a março.',
+    meses: ['P','X','X','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [100, 120], espaco: '120×100cm', profundidade: '0.5cm',
+    dicas: 'Cultura quente, não tolera geada. Plante mudas. Colha quando o fruto estiver brilhoso — depois fica amargo. Época de plantio: agosto a janeiro (Embrapa, região Sul).',
     variedades: 'Ciça, Hibush, Comprida Japonesa' },
   { id: 'repolho', nome: 'Repolho', emoji: '🥬', cat: 'hortaliças',
-    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
-    dias_colheita: [80, 110], espaco: '40×50cm', profundidade: '1cm',
-    dicas: 'Cultura de clima ameno. Transplante mudas com 10-15cm. Colha quando a cabeça estiver firme ao toque. Controle de lagartas essencial.',
+    meses: ['P','P','P','X','X','X','P','P','P','X','P','P'],
+    dias_colheita: [90, 110], espaco: '80×40cm', profundidade: '1cm',
+    dicas: 'Transplante mudas com 10-15cm. Colha quando a cabeça estiver firme ao toque. Controle de lagartas essencial. Época de plantio: fevereiro a setembro (cultivo de inverno) e novembro a janeiro (cultivo de verão).',
     variedades: 'Chato de Quintal, Coração de Boi, Roxo' },
-  { id: 'couve', nome: 'Couve', emoji: '🌿', cat: 'hortaliças',
-    meses: ['PC','PC','P','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [60, 90], espaco: '60×80cm', profundidade: '1cm',
-    dicas: 'Muito rústica e tolerante. Colha as folhas mais baixas primeiro. Planta perene no RS. Ótima fonte de cálcio.',
+  { id: 'couve', nome: 'Couve', emoji: '☘️', cat: 'hortaliças',
+    meses: ['X','P','P','P','P','P','P','X','X','X','X','X'],
+    dias_colheita: [80, 90], espaco: '90×50cm', profundidade: '1cm',
+    dicas: 'Muito rústica e tolerante. Colha as folhas mais baixas primeiro. Planta semiperene, pode continuar produzindo por mais tempo após a janela de plantio. Época de plantio: fevereiro a julho (Embrapa, região Sul).',
     variedades: 'Manteiga, Tronchuda, Mineira' },
   { id: 'espinafre', nome: 'Espinafre', emoji: '🍃', cat: 'hortaliças',
-    meses: ['X','X','P','P','P','PC','PC','PC','PC','P','X','X'],
-    dias_colheita: [40, 55], espaco: '10×20cm', profundidade: '1cm',
-    dicas: 'Planta de dias curtos e temperaturas frescas. Ciclo muito rápido. Boa opção para vasos e hortas pequenas.',
+    meses: ['P','P','P','P','P','P','P','P','P','X','X','X'],
+    dias_colheita: [60, 80], espaco: '25×10cm', profundidade: '1cm',
+    dicas: 'Planta de dias curtos e temperaturas frescas. Boa opção para vasos e hortas pequenas. Época de plantio: fevereiro a setembro (Embrapa, região Sul).',
     variedades: 'Híbrido F1, Japonês' },
-  { id: 'rucula', nome: 'Rúcula', emoji: '🌿', cat: 'hortaliças',
-    meses: ['P','X','P','P','P','PC','PC','PC','PC','P','P','P'],
-    dias_colheita: [30, 45], espaco: '10×20cm', profundidade: '0.5cm',
-    dicas: 'Uma das hortaliças mais fáceis e rápidas. No verão tende a florescer rápido (boltar). Plante em meia sombra no calor.',
+  { id: 'rucula', nome: 'Rúcula', emoji: '🥗', cat: 'hortaliças',
+    meses: ['X','X','P','P','P','P','P','P','X','X','X','X'],
+    dias_colheita: [40, 60], espaco: '20×15cm', profundidade: '0.5cm',
+    dicas: 'Prefere temperaturas mais amenas; no calor tende a florescer rápido (boltar). Época de plantio: março a agosto (Embrapa, região Sul).',
     variedades: 'Cultivada, Selvagem (mais picante)' },
-  { id: 'salsao', nome: 'Agrião / Salsão', emoji: '🌿', cat: 'hortaliças',
-    meses: ['X','X','P','P','P','PC','PC','PC','PC','P','X','X'],
-    dias_colheita: [50, 70], espaco: '20×30cm', profundidade: '0.3cm',
-    dicas: 'Prefere clima fresco e úmido. Agrião aprecia solos úmidos ou encharcados. Ótimo em bordas de canteiros.',
-    variedades: 'Agrião d\u2019água, Salsão verde' },
+  { id: 'salsao', nome: 'Agrião', emoji: '💧', cat: 'hortaliças',
+    meses: ['P','P','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [60, 70], espaco: '20×10cm', profundidade: '0.3cm',
+    dicas: 'Prefere clima fresco e úmido. Aprecia solos úmidos ou encharcados. Ótimo em bordas de canteiros próximo a fontes de água. Época de plantio: fevereiro a outubro (Embrapa, região Sul).',
+    variedades: 'Agrião d\u2019água, Agrião terrestre' },
   { id: 'rabanete', nome: 'Rabanete', emoji: '🔴', cat: 'legumes',
-    meses: ['P','X','P','P','P','P','P','P','P','P','P','P'],
-    dias_colheita: [25, 35], espaco: '5×15cm', profundidade: '1cm',
-    dicas: 'O legume mais rápido! Ideal para iniciantes e crianças. Não tolera calor intenso — no verão plante em sombra parcial.',
+    meses: ['X','X','P','P','P','P','P','P','X','X','X','X'],
+    dias_colheita: [25, 30], espaco: '25×5cm', profundidade: '1cm',
+    dicas: 'Um dos legumes mais rápidos! Ideal para iniciantes e crianças. Não tolera calor intenso. Época de plantio: março a agosto (Embrapa, região Sul).',
     variedades: 'Comprido Scarlet, Redondo Crimson' },
   { id: 'cebola', nome: 'Cebola', emoji: '🧅', cat: 'legumes',
-    meses: ['X','X','X','X','P','P','P','P','X','X','X','X'],
-    dias_colheita: [120, 150], espaco: '10×25cm', profundidade: '1cm',
-    dicas: 'Plante mudas ou semeie direto. Colha quando as folhas começarem a amarelar e tombar. Cure ao sol por 2 semanas antes de guardar.',
+    meses: ['X','X','X','X','X','X','P','P','X','X','X','X'],
+    dias_colheita: [120, 180], espaco: '40×10cm', profundidade: '1cm',
+    dicas: 'Plante mudas ou semeie direto. Colha quando as folhas começarem a amarelar e tombar. Cure ao sol por 2 semanas antes de guardar. Época de plantio: julho a agosto (Embrapa, região Sul).',
     variedades: 'Baia Periforme, Roxa, Texas Grano' },
   { id: 'alho', nome: 'Alho', emoji: '🧄', cat: 'legumes',
-    meses: ['X','X','X','X','P','P','P','X','X','X','X','X'],
-    dias_colheita: [120, 150], espaco: '10×20cm', profundidade: '5cm',
-    dicas: 'Plante dentes individuais com a ponta para cima. Colha quando 2/3 das folhas estiverem secas. O RS é o maior produtor de alho do Brasil.',
+    meses: ['X','X','X','X','P','P','X','X','X','X','X','X'],
+    dias_colheita: [150, 180], espaco: '25×10cm', profundidade: '5cm',
+    dicas: 'Plante dentes individuais com a ponta para cima. Colha quando 2/3 das folhas estiverem secas. O RS é o maior produtor de alho do Brasil. Época de plantio: maio a junho (Embrapa, região Sul).',
     variedades: 'Roxo, Branco, Chonan, Ito' },
   { id: 'batata-doce', nome: 'Batata-doce', emoji: '🍠', cat: 'graos',
-    meses: ['X','X','X','P','P','X','X','X','X','P','P','X'],
-    dias_colheita: [90, 120], espaco: '30×60cm', profundidade: 'ramas',
-    dicas: 'Plante ramas (raminhos enraizados). Muito produtiva e nutritiva. Tolera solos pobres. As folhas também são comestíveis.',
+    meses: ['X','X','X','X','X','X','X','X','X','P','P','P'],
+    dias_colheita: [120, 150], espaco: '90×30cm', profundidade: 'ramas',
+    dicas: 'Plante ramas (raminhos enraizados). Muito produtiva e nutritiva. Tolera solos pobres. As folhas também são comestíveis. Época de plantio: outubro a dezembro (Embrapa, região Sul).',
     variedades: 'Laranja, Roxa, Branca, Beauregard' },
-  { id: 'mandioca', nome: 'Mandioca', emoji: '🪵', cat: 'graos',
-    meses: ['X','X','X','P','P','X','X','X','X','P','P','X'],
-    dias_colheita: [300, 540], espaco: '80×100cm', profundidade: 'maniva',
-    dicas: 'Plante manivas (pedaços do caule) horizontais ou inclinadas. Colheita de 10 a 18 meses. Muito rústica e tolerante à seca.',
+  { id: 'mandioca', nome: 'Mandioca', emoji: '🟤', cat: 'graos',
+    meses: ['X','X','X','X','X','X','X','P','P','P','P','X'],
+    dias_colheita: [300, 540], espaco: '100×80cm', profundidade: 'maniva',
+    dicas: 'Plante manivas (pedaços do caule) horizontais ou inclinadas. Colheita de 10 a 18 meses. Muito rústica e tolerante à seca. Época de plantio no RS: 21 de agosto a 30 de novembro (Fepagro/Zoneamento Agroclimático).',
     variedades: 'Mandioca de mesa, Mandioca brava (para fécula)' },
   { id: 'milho', nome: 'Milho', emoji: '🌽', cat: 'graos',
-    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
-    dias_colheita: [120, 150], espaco: '20×80cm', profundidade: '3cm',
-    dicas: 'Plante em blocos para melhor polinização cruzada. Rega regular na fase de espigamento. Colha verde (milho verde) ou deixe secar (milho seco).',
+    meses: ['P','X','X','X','X','X','X','P','P','P','P','X'],
+    dias_colheita: [120, 150], espaco: '80×20cm', profundidade: '3cm',
+    dicas: 'Plante em blocos para melhor polinização cruzada. Rega regular na fase de espigamento. O plantio concentrado no RS é em agosto-setembro ("plantio do cedo"), mas o zoneamento permite até janeiro em algumas regiões.',
     variedades: 'Comum, Híbrido, Crioulo' },
   { id: 'milho-doce', nome: 'Milho Doce', emoji: '🌽', cat: 'graos',
-    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
-    dias_colheita: [75, 95], espaco: '20×80cm', profundidade: '3cm',
-    dicas: 'Colha na fase leitosa (quando o líquido da semente é branco e leitoso). Consuma ou congele logo após a colheita para manter o dulçor.',
+    meses: ['P','X','X','X','X','X','X','P','P','P','P','X'],
+    dias_colheita: [75, 95], espaco: '80×20cm', profundidade: '3cm',
+    dicas: 'Colha na fase leitosa (quando o líquido da semente é branco e leitoso). Consuma ou congele logo após a colheita para manter o dulçor. Plantio concentrado em agosto-setembro no RS, podendo se estender até janeiro.',
     variedades: 'Doce de Ouro, Dulcis, Jubilee' },
   { id: 'feijao', nome: 'Feijão', emoji: '🫘', cat: 'graos',
-    meses: ['X','X','X','X','X','X','X','P','P','P','X','X'],
-    dias_colheita: [60, 90], espaco: '10×50cm', profundidade: '3cm',
-    dicas: 'Semeie direto. Boa opção de adubação verde também. Colha verde (vagem) ou deixe secar. Fixador natural de nitrogênio no solo.',
+    meses: ['P','P','X','X','X','X','X','X','P','P','P','X'],
+    dias_colheita: [70, 90], espaco: '50×10cm', profundidade: '3cm',
+    dicas: 'Semeie direto. Boa opção de adubação verde também. Colha verde (vagem) ou deixe secar. No RS há duas janelas: safra (set-nov, conforme a região) e safrinha (jan-fev).',
     variedades: 'Carioca, Preto, Rajado, de Vagem' },
   { id: 'melancia', nome: 'Melancia', emoji: '🍉', cat: 'frutas',
-    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
-    dias_colheita: [80, 100], espaco: '1.5×2m', profundidade: '2cm',
-    dicas: 'Precisa de muito sol e calor. Rega constante até próximo à colheita (depois reduzir para concentrar açúcar). Maduro quando a gavinha próxima secar.',
+    meses: ['P','X','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [85, 90], espaco: '200×200cm', profundidade: '2cm',
+    dicas: 'Precisa de muito sol e calor. Rega constante até próximo à colheita (depois reduzir para concentrar açúcar). Maduro quando a gavinha próxima secar. Época de plantio: setembro a janeiro (Embrapa, região Sul).',
     variedades: 'Crimson Sweet, Charleston Gray, Sem semente' },
   { id: 'melao', nome: 'Melão', emoji: '🍈', cat: 'frutas',
-    meses: ['X','X','X','X','X','X','X','X','P','P','X','X'],
-    dias_colheita: [75, 100], espaco: '50×150cm', profundidade: '2cm',
-    dicas: 'Semelhante à melancia. Colha quando soltar perfume adocicado. Reduza a rega na fase de maturação para concentrar açúcar.',
+    meses: ['P','X','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [75, 100], espaco: '150×50cm', profundidade: '2cm',
+    dicas: 'Semelhante à melancia, exige calor e bastante sol. Colha quando soltar perfume adocicado. Reduza a rega na fase de maturação para concentrar açúcar. Janela alinhada à melancia (set-jan); cultura mais associada ao clima do Nordeste, sem fonte regional específica para o RS.',
     variedades: 'Amarelo, Cantalupo, Pele de sapo' },
   { id: 'morango', nome: 'Morango', emoji: '🍓', cat: 'frutas',
-    meses: ['X','X','X','P','P','X','X','P','P','X','X','X'],
-    dias_colheita: [90, 120], espaco: '30×30cm', profundidade: 'mudas',
-    dicas: 'Plante mudas de coroa. O RS é o maior produtor de morangos do Brasil! Ótimo para vasos. Cobertura de palha ajuda a manter umidade e evitar pragas.',
+    meses: ['X','X','P','P','X','X','X','X','X','X','X','X'],
+    dias_colheita: [70, 90], espaco: '30×20cm', profundidade: 'mudas',
+    dicas: 'Plante mudas de coroa. O RS é o maior produtor de morangos do Brasil! Ótimo para vasos. Cobertura de palha ajuda a manter umidade e evitar pragas. Época de plantio: março a abril (Embrapa, região Sul).',
     variedades: 'Albion, Oso Grande, San Andreas, Camarosa' },
-  { id: 'salsa', nome: 'Salsinha', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','X','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [60, 90], espaco: '15×20cm', profundidade: '0.3cm',
-    dicas: 'Germinação lenta (2-3 semanas). Mantenha solo úmido nesta fase. Corte sempre as folhas mais externas. Ótima em vasos na janela.',
+  { id: 'salsa', nome: 'Salsinha', emoji: '🍀', cat: 'temperos',
+    meses: ['X','X','P','P','P','P','P','P','P','X','X','X'],
+    dias_colheita: [60, 70], espaco: '25×10cm', profundidade: '0.3cm',
+    dicas: 'Germinação lenta (2-3 semanas). Mantenha solo úmido nesta fase. Corte sempre as folhas mais externas. Época de plantio: março a setembro (Embrapa, região Sul).',
     variedades: 'Crespa, Lisa (Italiana)' },
-  { id: 'cebolinha', nome: 'Cebolinha', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [40, 60], espaco: '15×15cm', profundidade: '1cm',
-    dicas: 'Uma das mais fáceis! Praticamente o ano todo. Corte a 3cm do solo e rebrotará. Propague dividindo as touceiras.',
+  { id: 'cebolinha', nome: 'Cebolinha', emoji: '🌱', cat: 'temperos',
+    meses: ['P','P','P','P','P','P','P','P','P','P','P','P'],
+    dias_colheita: [80, 100], espaco: '25×15cm', profundidade: '1cm',
+    dicas: 'Uma das mais fáceis! Plantio possível o ano todo na região Sul (Embrapa). Corte a 3cm do solo e rebrotará. Propague dividindo as touceiras.',
     variedades: 'Verde, Européia' },
   { id: 'manjericao', nome: 'Manjericão', emoji: '🌿', cat: 'temperos',
-    meses: ['X','X','X','X','X','X','X','P','P','P','P','X'],
-    dias_colheita: [45, 60], espaco: '30×30cm', profundidade: '0.3cm',
-    dicas: 'Não tolera frio. Retire flores para prolongar produção. Ótimo companheiro do tomate (controle de pragas). Perfeito para vasos dentro de casa no inverno.',
+    meses: ['X','X','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [60, 90], espaco: '30×30cm', profundidade: '0.3cm',
+    dicas: 'Não tolera geadas nem frio — no Vale do Taquari evite plantar de maio a agosto. Retire flores para prolongar produção. Ótimo companheiro do tomate (controle de pragas). Em locais com inverno mais ameno é possível plantar mais cedo (a partir de agosto).',
     variedades: 'Italiano, Roxo, Limão, Tailandês' },
-  { id: 'oregano', nome: 'Orégano', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','PC','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [60, 90], espaco: '30×40cm', profundidade: '0.2cm',
-    dicas: 'Planta perene resistente! Uma vez estabelecida, produz por anos. Seque as folhas para uso culinário. Pouca rega — não gosta de excesso de água.',
+  { id: 'oregano', nome: 'Orégano', emoji: '🟢', cat: 'temperos',
+    meses: ['P','P','P','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [60, 90], espaco: '40×30cm', profundidade: '0.2cm',
+    dicas: 'Planta perene resistente! Uma vez estabelecida, produz por anos. Seque as folhas para uso culinário. Pouca rega — não gosta de excesso de água. Evite plantar mudas novas no pico do inverno (maio-julho); orientação geral, sem fonte regional específica para o RS.',
     variedades: 'Comum, Grego, Turco' },
-  { id: 'tomilho', nome: 'Tomilho', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','PC','P','P','PC','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [60, 90], espaco: '25×30cm', profundidade: '0.2cm',
-    dicas: 'Perene, rústico e muito aromático. Tolera bem a falta de água. Excelente repelente natural de insetos. Funciona bem em vasos pequenos.',
+  { id: 'tomilho', nome: 'Tomilho', emoji: '🪴', cat: 'temperos',
+    meses: ['P','P','P','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [60, 90], espaco: '30×25cm', profundidade: '0.2cm',
+    dicas: 'Perene, rústico e muito aromático. Tolera bem a falta de água. Excelente repelente natural de insetos. Funciona bem em vasos pequenos. Evite plantar mudas novas no pico do inverno; orientação geral, sem fonte regional específica para o RS.',
     variedades: 'Comum, Limão, Rasteiro' },
   { id: 'hortela', nome: 'Hortelã', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
-    dias_colheita: [30, 50], espaco: 'vaso isolado', profundidade: '1cm',
-    dicas: 'ATENÇÃO: plante SEMPRE em vaso separado! É invasiva e tomará toda a horta. Muito fácil de multiplicar por galho. Ótima em vasos dentro de casa.',
+    meses: ['P','P','P','X','X','X','X','P','P','P','P','P'],
+    dias_colheita: [40, 60], espaco: 'vaso isolado', profundidade: '1cm',
+    dicas: 'ATENÇÃO: plante SEMPRE em vaso separado! É invasiva e tomará toda a horta. Muito fácil de multiplicar por galho/estaca. Evite plantar no pico do inverno; orientação geral, sem fonte regional específica para o RS.',
     variedades: 'Peppermint, Spearmint, Araponga, Japonesa' },
   { id: 'coentro', nome: 'Coentro', emoji: '🌿', cat: 'temperos',
-    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
-    dias_colheita: [30, 45], espaco: '10×20cm', profundidade: '0.5cm',
-    dicas: 'No calor tende a florescer rápido. Plante em sucessão (a cada 2 semanas) para colheita contínua. Colha antes de florescer para melhor sabor.',
+    meses: ['P','X','X','X','X','X','X','X','P','P','P','P'],
+    dias_colheita: [50, 60], espaco: '25×10cm', profundidade: '0.5cm',
+    dicas: 'No calor tende a florescer rápido. Plante em sucessão (a cada 2 semanas) para colheita contínua. Colha antes de florescer para melhor sabor. Época de plantio: setembro a janeiro (Embrapa, região Sul).',
     variedades: 'Verdão, Santo' },
   { id: 'alecrim', nome: 'Alecrim', emoji: '🌿', cat: 'temperos',
-    meses: ['PC','PC','P','P','PC','PC','PC','PC','PC','PC','PC','PC'],
+    meses: ['P','P','P','X','X','X','X','P','P','P','P','P'],
     dias_colheita: [90, 120], espaco: '50×50cm', profundidade: '0.3cm',
-    dicas: 'Arbusto perene muito resistente. Não tolera solo encharcado. Plante em local ensolarado e bem drenado. Cresce por muitos anos.',
+    dicas: 'Arbusto perene muito resistente, tolera bem o frio. Não tolera solo encharcado. Plante em local ensolarado e bem drenado. Evite plantar mudas novas no pico do inverno; orientação geral, sem fonte regional específica para o RS.',
     variedades: 'Comum, Rasteiro' },
   { id: 'erva-doce', nome: 'Erva-doce (Funcho)', emoji: '🌿', cat: 'temperos',
     meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
-    dias_colheita: [70, 100], espaco: '40×50cm', profundidade: '0.5cm',
-    dicas: 'Plante longe de outras ervas (alelopatia). Todas as partes são comestíveis: folhas, sementes e bulbo. Atrativa para insetos benéficos.',
+    dias_colheita: [70, 100], espaco: '50×40cm', profundidade: '0.5cm',
+    dicas: 'Plante longe de outras ervas (alelopatia). Todas as partes são comestíveis: folhas, sementes e bulbo. Atrativa para insetos benéficos. Orientação geral de clima ameno/frio, sem fonte regional específica para o RS.',
     variedades: 'Comum, Bulboso (Finochio)' },
   { id: 'batata', nome: 'Batata inglesa', emoji: '🥔', cat: 'graos',
-    meses: ['X','X','X','X','X','P','P','X','X','P','P','X'],
-    dias_colheita: [90, 120], espaco: '30×70cm', profundidade: '10cm',
-    dicas: 'Use batata-semente certificada. Plante com o olho (broto) para cima. Amontoe terra conforme cresce. Colha quando as ramas murcharem.',
+    meses: ['P','P','P','P','P','P','P','X','X','X','X','X'],
+    dias_colheita: [90, 120], espaco: '70×30cm', profundidade: '10cm',
+    dicas: 'Use batata-semente certificada. Plante com o olho (broto) para cima. Amontoe terra conforme cresce. Colha quando as ramas murcharem. No RS há duas safras: a 1ª concentrada de janeiro a março, a 2ª de abril a julho (Emater/RS).',
     variedades: 'Asterix, Monalisa, Ágata, Bintje' },
   { id: 'girassol', nome: 'Girassol', emoji: '🌻', cat: 'hortaliças',
     meses: ['X','X','X','X','X','X','X','P','P','P','X','X'],
-    dias_colheita: [70, 90], espaco: '30×50cm', profundidade: '2cm',
-    dicas: 'Além de decorativo, atrai polinizadores para toda a horta! As sementes são nutritivas. Boa opção para rotação de culturas.',
+    dias_colheita: [70, 90], espaco: '50×30cm', profundidade: '2cm',
+    dicas: 'Além de decorativo, atrai polinizadores para toda a horta! As sementes são nutritivas. Boa opção para rotação de culturas. Janela alinhada à primavera; orientação geral, sem fonte regional específica para o RS.',
     variedades: 'Anão de jardim, Comum, Russo' }
 ];
 
 const MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-let regiaoAtual = 'vale-taquari';
 let filtroAtual = 'todos';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -794,16 +753,6 @@ function filtrar(cat, btn) {
   filtroAtual = cat;
   document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderizarCulturas();
-}
-
-function trocarRegiao(regiao) {
-  regiaoAtual = regiao;
-  const r = REGIOES[regiao];
-  if (r) {
-    document.getElementById('hero-titulo').textContent = 'Calendário de Plantio';
-    document.getElementById('hero-subtitulo').textContent = r.nome + ' — ' + r.desc;
-  }
   renderizarCulturas();
 }
 
