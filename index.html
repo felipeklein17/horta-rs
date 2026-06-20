@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horta RS — Calendário de Plantio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde-escuro: #1e3a1f;
+    --verde-medio: #2d5a2e;
+    --verde-claro: #4a7c4e;
+    --verde-menta: #7ab07e;
+    --verde-palido: #c8e6c9;
+    --terra: #8b5e3c;
+    --terra-claro: #c4956a;
+    --creme: #f9f5ee;
+    --creme-escuro: #ede8dc;
+    --texto: #1a2e1a;
+    --texto-medio: #4a5c4a;
+    --texto-claro: #7a8c7a;
+    --branco: #ffffff;
+    --amarelo: #f0c040;
+    --laranja: #e87c2e;
+    --vermelho: #c44a2a;
+    --azul: #4a7fb5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--creme);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--verde-escuro);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { font-size: 28px; line-height: 1; }
+  .logo-text { font-family: 'Lora', serif; color: var(--verde-palido); font-size: 1.3rem; font-weight: 600; }
+  .logo-sub { font-size: 0.7rem; color: var(--verde-menta); font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-top: -2px; }
+
+  nav { display: flex; gap: 4px; }
+
+  nav button {
+    background: transparent; border: none; color: var(--verde-menta);
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 400;
+    transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+  }
+
+  nav button:hover { background: rgba(255,255,255,0.1); color: white; }
+  nav button.active { background: var(--verde-claro); color: white; }
+
+  .region-selector { display: flex; align-items: center; gap: 8px; }
+
+  .region-selector select {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  .region-selector select option { background: var(--verde-escuro); color: white; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .hero-strip {
+    background: linear-gradient(135deg, var(--verde-medio) 0%, var(--verde-escuro) 100%);
+    border-radius: 16px; padding: 2rem 2.5rem; margin-bottom: 2rem; color: white;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+
+  .hero-strip h1 { font-family: 'Lora', serif; font-size: 1.6rem; font-weight: 600; margin-bottom: 4px; color: var(--verde-palido); }
+  .hero-strip p { font-size: 0.9rem; color: var(--verde-menta); font-weight: 300; }
+
+  .mes-atual { background: rgba(255,255,255,0.12); border-radius: 12px; padding: 12px 20px; text-align: center; min-width: 120px; }
+  .mes-atual .mes-nome { font-family: 'Lora', serif; font-size: 1.2rem; color: var(--verde-palido); }
+  .mes-atual .mes-sub { font-size: 0.75rem; color: var(--verde-menta); margin-top: 2px; }
+
+  .filtros { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+
+  .filtro-btn {
+    background: var(--branco); border: 1.5px solid var(--creme-escuro); color: var(--texto-medio);
+    padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  }
+
+  .filtro-btn:hover { border-color: var(--verde-claro); color: var(--verde-escuro); }
+  .filtro-btn.active { background: var(--verde-escuro); border-color: var(--verde-escuro); color: white; }
+
+  .culturas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+  .cultura-card {
+    background: var(--branco); border-radius: 14px; border: 1.5px solid var(--creme-escuro);
+    overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .cultura-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+  .cultura-card-header {
+    padding: 1rem 1.2rem 0.8rem; display: flex; align-items: flex-start; gap: 10px;
+    border-bottom: 1px solid var(--creme-escuro);
+  }
+
+  .cultura-emoji { font-size: 2rem; line-height: 1; }
+  .cultura-info h3 { font-family: 'Lora', serif; font-size: 1rem; color: var(--verde-escuro); font-weight: 600; }
+  .cultura-info .cultura-cat { font-size: 0.75rem; color: var(--texto-claro); margin-top: 1px; }
+
+  .cultura-badge { margin-left: auto; padding: 3px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 500; white-space: nowrap; }
+  .badge-ok { background: #e8f5e9; color: #2e7d32; }
+  .badge-bom { background: #fff8e1; color: #f57f17; }
+  .badge-nao { background: #fce4ec; color: #b71c1c; }
+
+  .cultura-meses { padding: 0.8rem 1.2rem; }
+  .meses-label { font-size: 0.72rem; color: var(--texto-claro); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .meses-barra { display: flex; gap: 2px; }
+
+  .mes-bloco {
+    flex: 1; height: 20px; border-radius: 3px; background: var(--creme-escuro);
+    display: flex; align-items: center; justify-content: center; font-size: 0.55rem;
+    color: var(--texto-claro); font-weight: 500; position: relative;
+  }
+
+  .mes-bloco.plantio { background: var(--verde-claro); color: white; }
+  .mes-bloco.colheita { background: var(--amarelo); color: var(--terra); }
+  .mes-bloco.plantio-colheita { background: var(--verde-menta); color: var(--verde-escuro); }
+  .mes-bloco.atual { outline: 2px solid var(--terra); outline-offset: 1px; }
+
+  .cultura-detalhes { padding: 0 1.2rem 1rem; display: flex; gap: 1rem; font-size: 0.8rem; }
+  .detalhe-item { display: flex; align-items: center; gap: 4px; color: var(--texto-medio); }
+  .detalhe-item span:first-child { font-size: 1rem; }
+
+  .btn-plantar {
+    margin: 0 1.2rem 1rem; width: calc(100% - 2.4rem); background: var(--verde-escuro);
+    color: white; border: none; border-radius: 8px; padding: 8px; font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s; font-weight: 500;
+  }
+
+  .btn-plantar:hover { background: var(--verde-claro); }
+
+  .legenda { display: flex; gap: 16px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .legenda-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--texto-medio); }
+  .legenda-cor { width: 14px; height: 14px; border-radius: 3px; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200;
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--branco); border-radius: 16px; padding: 2rem; max-width: 560px;
+    width: 100%; max-height: 90vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.2s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;
+    padding-bottom: 1rem; border-bottom: 1px solid var(--creme-escuro);
+  }
+
+  .modal-emoji { font-size: 2.5rem; }
+  .modal-header h2 { font-family: 'Lora', serif; color: var(--verde-escuro); font-size: 1.3rem; }
+  .modal-close { margin-left: auto; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--texto-claro); line-height: 1; }
+
+  .modal-section { margin-bottom: 1.2rem; }
+  .modal-section h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--texto-claro); margin-bottom: 6px; }
+  .modal-section p { font-size: 0.9rem; color: var(--texto-medio); line-height: 1.6; }
+
+  .simulador { background: var(--creme); border-radius: 10px; padding: 1.2rem; margin-top: 1rem; }
+  .simulador h4 { font-family: 'Lora', serif; color: var(--verde-escuro); margin-bottom: 0.8rem; font-size: 1rem; }
+  .simulador-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  .simulador-form input[type="date"] {
+    padding: 8px 10px; border: 1.5px solid var(--creme-escuro); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--texto);
+    background: white; flex: 1; min-width: 140px;
+  }
+
+  .simulador-form button {
+    background: var(--verde-escuro); color: white; border: none; border-radius: 8px;
+    padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; cursor: pointer;
+  }
+
+  .simulador-resultado {
+    margin-top: 0.8rem; padding: 0.8rem; background: white; border-radius: 8px;
+    border-left: 3px solid var(--verde-claro); font-size: 0.9rem; color: var(--texto-medio); display: none;
+  }
+
+  .simulador-resultado.show { display: block; }
+
+  .btn-registrar-modal {
+    width: 100%; margin-top: 1rem; background: var(--terra); color: white; border: none;
+    border-radius: 10px; padding: 12px; font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; cursor: pointer; transition: background 0.2s;
+  }
+
+  .btn-registrar-modal:hover { background: var(--terra-claro); }
+
+  .registros-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+  .registros-header h2 { font-family: 'Lora', serif; font-size: 1.4rem; color: var(--verde-escuro); }
+
+  .btn-novo-registro {
+    background: var(--verde-escuro); color: white; border: none; border-radius: 10px;
+    padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; font-weight: 500; transition: background 0.2s;
+  }
+
+  .btn-novo-registro:hover { background: var(--verde-claro); }
+
+  .registros-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+
+  .registro-card { background: var(--branco); border-radius: 14px; border: 1.5px solid var(--creme-escuro); padding: 1.2rem; }
+  .registro-card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+  .registro-emoji { font-size: 1.8rem; }
+  .registro-titulo { font-family: 'Lora', serif; color: var(--verde-escuro); font-size: 1rem; font-weight: 600; }
+  .registro-local { font-size: 0.78rem; color: var(--texto-claro); margin-top: 1px; }
+
+  .registro-datas { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.8rem; }
+  .data-item { background: var(--creme); border-radius: 8px; padding: 8px; text-align: center; }
+  .data-item .data-label { font-size: 0.68rem; color: var(--texto-claro); text-transform: uppercase; letter-spacing: 0.06em; }
+  .data-item .data-valor { font-size: 0.9rem; color: var(--verde-escuro); font-weight: 500; margin-top: 2px; }
+  .data-item.colheita-estimada { background: #fff8e1; }
+  .data-item.colheita-estimada .data-valor { color: #e65100; }
+
+  .progresso-barra-wrap { margin-bottom: 0.5rem; }
+  .progresso-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--texto-claro); margin-bottom: 4px; }
+  .progresso-barra { height: 6px; background: var(--creme-escuro); border-radius: 3px; overflow: hidden; }
+  .progresso-fill { height: 100%; background: var(--verde-claro); border-radius: 3px; transition: width 0.5s; }
+  .progresso-fill.colhendo { background: var(--amarelo); }
+  .progresso-fill.pronto { background: var(--laranja); }
+
+  .registro-acoes { display: flex; gap: 8px; margin-top: 0.8rem; }
+
+  .btn-reg-acao {
+    flex: 1; padding: 7px; border-radius: 7px; border: 1.5px solid var(--creme-escuro);
+    background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+    cursor: pointer; color: var(--texto-medio); transition: all 0.2s;
+  }
+
+  .btn-reg-acao:hover { border-color: var(--verde-claro); color: var(--verde-escuro); }
+  .btn-reg-acao.danger:hover { border-color: var(--vermelho); color: var(--vermelho); }
+
+  .registro-obs {
+    font-size: 0.82rem; color: var(--texto-claro); font-style: italic; margin-top: 6px;
+    padding-top: 6px; border-top: 1px solid var(--creme-escuro);
+  }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--texto-claro); }
+  .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .empty-state p { font-size: 0.95rem; line-height: 1.6; }
+
+  .form-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300;
+    display: flex; align-items: center; justify-content: center; padding: 1rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+
+  .form-overlay.open { opacity: 1; pointer-events: all; }
+
+  .form-modal {
+    background: var(--branco); border-radius: 16px; padding: 2rem; max-width: 500px;
+    width: 100%; max-height: 90vh; overflow-y: auto; transform: translateY(20px); transition: transform 0.2s;
+  }
+
+  .form-overlay.open .form-modal { transform: translateY(0); }
+  .form-modal h2 { font-family: 'Lora', serif; color: var(--verde-escuro); margin-bottom: 1.5rem; font-size: 1.2rem; }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-group label { display: block; font-size: 0.8rem; color: var(--texto-medio); margin-bottom: 4px; font-weight: 500; }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 12px; border: 1.5px solid var(--creme-escuro); border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--texto); background: white; transition: border-color 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--verde-claro); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .form-acoes { display: flex; gap: 8px; margin-top: 1.5rem; }
+
+  .btn-cancelar {
+    flex: 1; padding: 10px; border: 1.5px solid var(--creme-escuro); border-radius: 8px;
+    background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer; color: var(--texto-medio);
+  }
+
+  .btn-salvar {
+    flex: 2; padding: 10px; background: var(--verde-escuro); color: white; border: none;
+    border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer;
+    font-weight: 500; transition: background 0.2s;
+  }
+
+  .btn-salvar:hover { background: var(--verde-claro); }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; background: var(--verde-escuro); color: white;
+    padding: 12px 20px; border-radius: 10px; font-size: 0.9rem; z-index: 500;
+    transform: translateY(100px); opacity: 0; transition: all 0.3s; max-width: 90vw;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.error { background: var(--vermelho); }
+
+  .status-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.72rem; font-weight: 500; margin-top: 4px; }
+  .status-crescendo { background: #e8f5e9; color: #2e7d32; }
+  .status-quase { background: #fff8e1; color: #e65100; }
+  .status-colher { background: #fff3e0; color: #bf360c; }
+  .status-colhido { background: #f3e5f5; color: #6a1b9a; }
+
+  @media (max-width: 600px) {
+    main { padding: 1rem; }
+    .hero-strip { flex-direction: column; text-align: center; }
+    .header-inner { gap: 8px; justify-content: center; }
+    .logo-text { font-size: 1rem; }
+    nav button span.nav-label { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .region-selector select { max-width: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🌱</div>
+      <div>
+        <div class="logo-text">Horta RS</div>
+        <span class="logo-sub">Calendário de Plantio</span>
+      </div>
+    </div>
+    <nav>
+      <button class="active" onclick="trocarAba('calendario', this)">📅 <span class="nav-label">Calendário</span></button>
+      <button onclick="trocarAba('registros', this)">📋 <span class="nav-label">Meus Plantios</span></button>
+    </nav>
+    <div class="region-selector">
+      <select id="regiaoSelect" onchange="trocarRegiao(this.value)">
+        <optgroup label="Rio Grande do Sul">
+          <option value="vale-taquari" selected>Vale do Taquari</option>
+          <option value="serra-gaucha">Serra Gaúcha / Planalto</option>
+          <option value="litoral">Litoral / Zona Sul</option>
+          <option value="metade-sul">Metade Sul / Campanha</option>
+          <option value="noroeste">Noroeste RS</option>
+        </optgroup>
+        <optgroup label="Outros estados">
+          <option value="sc-litoral">SC – Litoral</option>
+          <option value="sc-planalto">SC – Planalto Serrano</option>
+          <option value="pr-curitiba">PR – Curitiba / Serra</option>
+          <option value="sp-interior">SP – Interior</option>
+        </optgroup>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div id="tab-calendario" class="tab-content active">
+    <div class="hero-strip">
+      <div>
+        <h1 id="hero-titulo">Calendário de Plantio</h1>
+        <p id="hero-subtitulo">Vale do Taquari — clima subtropical úmido</p>
+      </div>
+      <div class="mes-atual">
+        <div class="mes-nome" id="mes-nome-atual"></div>
+        <div class="mes-sub">mês atual</div>
+      </div>
+    </div>
+
+    <div class="legenda">
+      <div class="legenda-item"><div class="legenda-cor" style="background: var(--verde-claro)"></div><span>Plantio ideal</span></div>
+      <div class="legenda-item"><div class="legenda-cor" style="background: var(--amarelo)"></div><span>Colheita</span></div>
+      <div class="legenda-item"><div class="legenda-cor" style="background: var(--verde-menta)"></div><span>Plantio e colheita</span></div>
+      <div class="legenda-item"><div class="legenda-cor" style="background: var(--creme-escuro); border: 1px solid #ccc"></div><span>Não recomendado</span></div>
+    </div>
+
+    <div class="filtros" id="filtros">
+      <button class="filtro-btn active" onclick="filtrar('todos', this)">Todos</button>
+      <button class="filtro-btn" onclick="filtrar('hortaliças', this)">🥬 Hortaliças</button>
+      <button class="filtro-btn" onclick="filtrar('legumes', this)">🥕 Legumes e Raízes</button>
+      <button class="filtro-btn" onclick="filtrar('frutas', this)">🍉 Frutas</button>
+      <button class="filtro-btn" onclick="filtrar('graos', this)">🌽 Grãos e Tubérculos</button>
+      <button class="filtro-btn" onclick="filtrar('temperos', this)">🌿 Temperos e Ervas</button>
+      <button class="filtro-btn" onclick="filtrar('plantio-agora', this)">✅ Plantar agora</button>
+    </div>
+
+    <div class="culturas-grid" id="culturas-grid"></div>
+  </div>
+
+  <div id="tab-registros" class="tab-content">
+    <div class="registros-header">
+      <h2>Meus Plantios</h2>
+      <button class="btn-novo-registro" onclick="abrirFormRegistro()">＋ Registrar plantio</button>
+    </div>
+    <div class="registros-lista" id="registros-lista"></div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
+  <div class="modal" id="modal-conteudo"></div>
+</div>
+
+<div class="form-overlay" id="form-overlay" onclick="fecharForm(event)">
+  <div class="form-modal">
+    <h2>🌱 Registrar novo plantio</h2>
+    <div class="form-group">
+      <label>Cultura *</label>
+      <select id="form-cultura"><option value="">Selecione uma cultura...</option></select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data do plantio *</label>
+        <input type="date" id="form-data-plantio">
+      </div>
+      <div class="form-group">
+        <label>Local / canteiro</label>
+        <input type="text" id="form-local" placeholder="Ex: Canteiro A, Estufa...">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Quantidade / área</label>
+      <input type="text" id="form-qtd" placeholder="Ex: 2 fileiras de 3m, 10 mudas...">
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="form-obs" placeholder="Variedade, condições, adubo utilizado..."></textarea>
+    </div>
+    <div id="preview-colheita" style="background: var(--creme); border-radius: 8px; padding: 10px 12px; font-size: 0.85rem; color: var(--texto-medio); display: none; margin-top: 0.5rem;"></div>
+    <div class="form-acoes">
+      <button class="btn-cancelar" onclick="fecharFormDireto()">Cancelar</button>
+      <button class="btn-salvar" onclick="salvarRegistro()">💾 Salvar registro</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Horta RS — dados salvos localmente no navegador (localStorage)
+
+const STORAGE_KEY = 'horta_rs_plantios';
+
+function carregarDoStorage() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) {
+    console.error('Erro ao ler localStorage:', e);
+    return [];
+  }
+}
+
+function salvarNoStorage(registros) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+    return true;
+  } catch(e) {
+    console.error('Erro ao salvar no localStorage:', e);
+    return false;
+  }
+}
+
+const REGIOES = {
+  'vale-taquari': { nome: 'Vale do Taquari', desc: 'clima subtropical úmido' },
+  'serra-gaucha': { nome: 'Serra Gaúcha / Planalto', desc: 'clima subtropical de altitude' },
+  'litoral': { nome: 'Litoral / Zona Sul', desc: 'clima subtropical litorâneo' },
+  'metade-sul': { nome: 'Metade Sul / Campanha', desc: 'clima temperado / invernos mais rigorosos' },
+  'noroeste': { nome: 'Noroeste RS', desc: 'clima subtropical quente' },
+  'sc-litoral': { nome: 'SC – Litoral', desc: 'clima subtropical litorâneo' },
+  'sc-planalto': { nome: 'SC – Planalto Serrano', desc: 'clima subtropical de altitude' },
+  'pr-curitiba': { nome: 'PR – Curitiba / Serra', desc: 'clima subtropical de altitude' },
+  'sp-interior': { nome: 'SP – Interior', desc: 'clima tropical de altitude' }
+};
+
+const CULTURAS_BASE = [
+  { id: 'alface', nome: 'Alface', emoji: '🥬', cat: 'hortaliças',
+    meses: ['PC','PC','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [60, 75], espaco: '25×25cm', profundidade: '0.5cm',
+    dicas: 'Prefere temperaturas amenas entre 15°C e 20°C. No verão, plante variedades mais tolerantes ao calor como alface crespa. Rega diária essencial.',
+    variedades: 'Crespa, Lisa, Americana, Mimosa, Roxa' },
+  { id: 'tomate', nome: 'Tomate', emoji: '🍅', cat: 'legumes',
+    meses: ['X','X','X','X','X','X','P','P','P','P','X','X'],
+    dias_colheita: [90, 120], espaco: '60×60cm', profundidade: '1cm',
+    dicas: 'Plante em local com bastante sol. Tutor (estaca) é essencial. Adubação com potássio melhora o sabor. Evite excesso de água nas folhas.',
+    variedades: 'Italiano, Cereja, Caqui, Santa Cruz' },
+  { id: 'cenoura', nome: 'Cenoura', emoji: '🥕', cat: 'legumes',
+    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [80, 100], espaco: '5×25cm', profundidade: '1cm',
+    dicas: 'Solo profundo e bem preparado, sem pedras. Desbaste importante quando as plantas têm 5cm. Não transplante, semeie direto.',
+    variedades: 'Nantes, Brasília, Alvorada' },
+  { id: 'beterraba', nome: 'Beterraba', emoji: '🫒', cat: 'legumes',
+    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [60, 80], espaco: '10×25cm', profundidade: '2cm',
+    dicas: 'Tolera leve geada. Solo profundo e fértil. Aproveite as folhas na culinária também! Desbaste deixando uma planta a cada 10cm.',
+    variedades: 'Tall Top Early Wonder, Itapuã, Formanova' },
+  { id: 'abobrinha', nome: 'Abobrinha', emoji: '🥒', cat: 'legumes',
+    meses: ['X','X','P','P','X','X','X','X','P','P','P','X'],
+    dias_colheita: [45, 65], espaco: '80×80cm', profundidade: '2cm',
+    dicas: 'Colha quando jovem (15-20cm) para melhor sabor e para estimular mais produção. Planta de ciclo curto e muito produtiva.',
+    variedades: 'Caserta, Menina Brasileira, Italiana' },
+  { id: 'abobora', nome: 'Abóbora', emoji: '🎃', cat: 'legumes',
+    meses: ['X','X','P','P','X','X','X','X','X','P','P','X'],
+    dias_colheita: [90, 120], espaco: '2×2m', profundidade: '3cm',
+    dicas: 'Precisa de muito espaço. Plante 3-4 sementes por cova e faça desbaste. O fruto está maduro quando o talo secar. Ótima produção no RS.',
+    variedades: 'Cabotiá, Moranga, Paulista, Porquinho' },
+  { id: 'moranga', nome: 'Moranga', emoji: '🍊', cat: 'legumes',
+    meses: ['X','X','P','P','X','X','X','X','X','P','P','X'],
+    dias_colheita: [100, 130], espaco: '2×2.5m', profundidade: '3cm',
+    dicas: 'Similar à abóbora, porém frutos maiores e mais doces. Plante em local ensolarado com solo rico. Rega na base, nunca nas folhas.',
+    variedades: 'Exposição, Coroa, Chapéu-de-bispo' },
+  { id: 'pepino', nome: 'Pepino', emoji: '🥒', cat: 'legumes',
+    meses: ['X','X','P','P','X','X','X','X','P','P','P','X'],
+    dias_colheita: [45, 60], espaco: '30×80cm', profundidade: '2cm',
+    dicas: 'Trepadeira que aprecia tutoramento. Rega regular e abundante. Colha frequentemente para estimular produção. Evite solo encharcado.',
+    variedades: 'Caipira, Japonês, Picles, Aodai' },
+  { id: 'pimentao', nome: 'Pimentão', emoji: '🫑', cat: 'legumes',
+    meses: ['X','X','X','X','X','X','P','P','P','X','X','X'],
+    dias_colheita: [90, 120], espaco: '50×50cm', profundidade: '0.5cm',
+    dicas: 'Plante as mudas quando a temperatura noturna estiver acima de 15°C. Adubação regular com fósforo e potássio. Colha verde ou espere amadurecer.',
+    variedades: 'Vermelho, Amarelo, Verde, Colorido' },
+  { id: 'berinjela', nome: 'Berinjela', emoji: '🍆', cat: 'legumes',
+    meses: ['X','X','X','X','X','X','P','P','P','X','X','X'],
+    dias_colheita: [90, 120], espaco: '70×70cm', profundidade: '0.5cm',
+    dicas: 'Cultura quente, não tolera geada. Plante mudas. Colha quando o fruto estiver brilhoso — depois fica amargo. Boa produção no RS de setembro a março.',
+    variedades: 'Ciça, Hibush, Comprida Japonesa' },
+  { id: 'repolho', nome: 'Repolho', emoji: '🥬', cat: 'hortaliças',
+    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [80, 110], espaco: '40×50cm', profundidade: '1cm',
+    dicas: 'Cultura de clima ameno. Transplante mudas com 10-15cm. Colha quando a cabeça estiver firme ao toque. Controle de lagartas essencial.',
+    variedades: 'Chato de Quintal, Coração de Boi, Roxo' },
+  { id: 'couve', nome: 'Couve', emoji: '🌿', cat: 'hortaliças',
+    meses: ['PC','PC','P','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [60, 90], espaco: '60×80cm', profundidade: '1cm',
+    dicas: 'Muito rústica e tolerante. Colha as folhas mais baixas primeiro. Planta perene no RS. Ótima fonte de cálcio.',
+    variedades: 'Manteiga, Tronchuda, Mineira' },
+  { id: 'espinafre', nome: 'Espinafre', emoji: '🍃', cat: 'hortaliças',
+    meses: ['X','X','P','P','P','PC','PC','PC','PC','P','X','X'],
+    dias_colheita: [40, 55], espaco: '10×20cm', profundidade: '1cm',
+    dicas: 'Planta de dias curtos e temperaturas frescas. Ciclo muito rápido. Boa opção para vasos e hortas pequenas.',
+    variedades: 'Híbrido F1, Japonês' },
+  { id: 'rucula', nome: 'Rúcula', emoji: '🌿', cat: 'hortaliças',
+    meses: ['P','X','P','P','P','PC','PC','PC','PC','P','P','P'],
+    dias_colheita: [30, 45], espaco: '10×20cm', profundidade: '0.5cm',
+    dicas: 'Uma das hortaliças mais fáceis e rápidas. No verão tende a florescer rápido (boltar). Plante em meia sombra no calor.',
+    variedades: 'Cultivada, Selvagem (mais picante)' },
+  { id: 'salsao', nome: 'Agrião / Salsão', emoji: '🌿', cat: 'hortaliças',
+    meses: ['X','X','P','P','P','PC','PC','PC','PC','P','X','X'],
+    dias_colheita: [50, 70], espaco: '20×30cm', profundidade: '0.3cm',
+    dicas: 'Prefere clima fresco e úmido. Agrião aprecia solos úmidos ou encharcados. Ótimo em bordas de canteiros.',
+    variedades: 'Agrião d\u2019água, Salsão verde' },
+  { id: 'rabanete', nome: 'Rabanete', emoji: '🔴', cat: 'legumes',
+    meses: ['P','X','P','P','P','P','P','P','P','P','P','P'],
+    dias_colheita: [25, 35], espaco: '5×15cm', profundidade: '1cm',
+    dicas: 'O legume mais rápido! Ideal para iniciantes e crianças. Não tolera calor intenso — no verão plante em sombra parcial.',
+    variedades: 'Comprido Scarlet, Redondo Crimson' },
+  { id: 'cebola', nome: 'Cebola', emoji: '🧅', cat: 'legumes',
+    meses: ['X','X','X','X','P','P','P','P','X','X','X','X'],
+    dias_colheita: [120, 150], espaco: '10×25cm', profundidade: '1cm',
+    dicas: 'Plante mudas ou semeie direto. Colha quando as folhas começarem a amarelar e tombar. Cure ao sol por 2 semanas antes de guardar.',
+    variedades: 'Baia Periforme, Roxa, Texas Grano' },
+  { id: 'alho', nome: 'Alho', emoji: '🧄', cat: 'legumes',
+    meses: ['X','X','X','X','P','P','P','X','X','X','X','X'],
+    dias_colheita: [120, 150], espaco: '10×20cm', profundidade: '5cm',
+    dicas: 'Plante dentes individuais com a ponta para cima. Colha quando 2/3 das folhas estiverem secas. O RS é o maior produtor de alho do Brasil.',
+    variedades: 'Roxo, Branco, Chonan, Ito' },
+  { id: 'batata-doce', nome: 'Batata-doce', emoji: '🍠', cat: 'graos',
+    meses: ['X','X','X','P','P','X','X','X','X','P','P','X'],
+    dias_colheita: [90, 120], espaco: '30×60cm', profundidade: 'ramas',
+    dicas: 'Plante ramas (raminhos enraizados). Muito produtiva e nutritiva. Tolera solos pobres. As folhas também são comestíveis.',
+    variedades: 'Laranja, Roxa, Branca, Beauregard' },
+  { id: 'mandioca', nome: 'Mandioca', emoji: '🪵', cat: 'graos',
+    meses: ['X','X','X','P','P','X','X','X','X','P','P','X'],
+    dias_colheita: [300, 540], espaco: '80×100cm', profundidade: 'maniva',
+    dicas: 'Plante manivas (pedaços do caule) horizontais ou inclinadas. Colheita de 10 a 18 meses. Muito rústica e tolerante à seca.',
+    variedades: 'Mandioca de mesa, Mandioca brava (para fécula)' },
+  { id: 'milho', nome: 'Milho', emoji: '🌽', cat: 'graos',
+    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
+    dias_colheita: [120, 150], espaco: '20×80cm', profundidade: '3cm',
+    dicas: 'Plante em blocos para melhor polinização cruzada. Rega regular na fase de espigamento. Colha verde (milho verde) ou deixe secar (milho seco).',
+    variedades: 'Comum, Híbrido, Crioulo' },
+  { id: 'milho-doce', nome: 'Milho Doce', emoji: '🌽', cat: 'graos',
+    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
+    dias_colheita: [75, 95], espaco: '20×80cm', profundidade: '3cm',
+    dicas: 'Colha na fase leitosa (quando o líquido da semente é branco e leitoso). Consuma ou congele logo após a colheita para manter o dulçor.',
+    variedades: 'Doce de Ouro, Dulcis, Jubilee' },
+  { id: 'feijao', nome: 'Feijão', emoji: '🫘', cat: 'graos',
+    meses: ['X','X','X','X','X','X','X','P','P','P','X','X'],
+    dias_colheita: [60, 90], espaco: '10×50cm', profundidade: '3cm',
+    dicas: 'Semeie direto. Boa opção de adubação verde também. Colha verde (vagem) ou deixe secar. Fixador natural de nitrogênio no solo.',
+    variedades: 'Carioca, Preto, Rajado, de Vagem' },
+  { id: 'melancia', nome: 'Melancia', emoji: '🍉', cat: 'frutas',
+    meses: ['X','X','X','X','X','X','X','X','P','P','P','X'],
+    dias_colheita: [80, 100], espaco: '1.5×2m', profundidade: '2cm',
+    dicas: 'Precisa de muito sol e calor. Rega constante até próximo à colheita (depois reduzir para concentrar açúcar). Maduro quando a gavinha próxima secar.',
+    variedades: 'Crimson Sweet, Charleston Gray, Sem semente' },
+  { id: 'melao', nome: 'Melão', emoji: '🍈', cat: 'frutas',
+    meses: ['X','X','X','X','X','X','X','X','P','P','X','X'],
+    dias_colheita: [75, 100], espaco: '50×150cm', profundidade: '2cm',
+    dicas: 'Semelhante à melancia. Colha quando soltar perfume adocicado. Reduza a rega na fase de maturação para concentrar açúcar.',
+    variedades: 'Amarelo, Cantalupo, Pele de sapo' },
+  { id: 'morango', nome: 'Morango', emoji: '🍓', cat: 'frutas',
+    meses: ['X','X','X','P','P','X','X','P','P','X','X','X'],
+    dias_colheita: [90, 120], espaco: '30×30cm', profundidade: 'mudas',
+    dicas: 'Plante mudas de coroa. O RS é o maior produtor de morangos do Brasil! Ótimo para vasos. Cobertura de palha ajuda a manter umidade e evitar pragas.',
+    variedades: 'Albion, Oso Grande, San Andreas, Camarosa' },
+  { id: 'salsa', nome: 'Salsinha', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','X','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [60, 90], espaco: '15×20cm', profundidade: '0.3cm',
+    dicas: 'Germinação lenta (2-3 semanas). Mantenha solo úmido nesta fase. Corte sempre as folhas mais externas. Ótima em vasos na janela.',
+    variedades: 'Crespa, Lisa (Italiana)' },
+  { id: 'cebolinha', nome: 'Cebolinha', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [40, 60], espaco: '15×15cm', profundidade: '1cm',
+    dicas: 'Uma das mais fáceis! Praticamente o ano todo. Corte a 3cm do solo e rebrotará. Propague dividindo as touceiras.',
+    variedades: 'Verde, Européia' },
+  { id: 'manjericao', nome: 'Manjericão', emoji: '🌿', cat: 'temperos',
+    meses: ['X','X','X','X','X','X','X','P','P','P','P','X'],
+    dias_colheita: [45, 60], espaco: '30×30cm', profundidade: '0.3cm',
+    dicas: 'Não tolera frio. Retire flores para prolongar produção. Ótimo companheiro do tomate (controle de pragas). Perfeito para vasos dentro de casa no inverno.',
+    variedades: 'Italiano, Roxo, Limão, Tailandês' },
+  { id: 'oregano', nome: 'Orégano', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','PC','P','P','P','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [60, 90], espaco: '30×40cm', profundidade: '0.2cm',
+    dicas: 'Planta perene resistente! Uma vez estabelecida, produz por anos. Seque as folhas para uso culinário. Pouca rega — não gosta de excesso de água.',
+    variedades: 'Comum, Grego, Turco' },
+  { id: 'tomilho', nome: 'Tomilho', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','PC','P','P','PC','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [60, 90], espaco: '25×30cm', profundidade: '0.2cm',
+    dicas: 'Perene, rústico e muito aromático. Tolera bem a falta de água. Excelente repelente natural de insetos. Funciona bem em vasos pequenos.',
+    variedades: 'Comum, Limão, Rasteiro' },
+  { id: 'hortela', nome: 'Hortelã', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [30, 50], espaco: 'vaso isolado', profundidade: '1cm',
+    dicas: 'ATENÇÃO: plante SEMPRE em vaso separado! É invasiva e tomará toda a horta. Muito fácil de multiplicar por galho. Ótima em vasos dentro de casa.',
+    variedades: 'Peppermint, Spearmint, Araponga, Japonesa' },
+  { id: 'coentro', nome: 'Coentro', emoji: '🌿', cat: 'temperos',
+    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [30, 45], espaco: '10×20cm', profundidade: '0.5cm',
+    dicas: 'No calor tende a florescer rápido. Plante em sucessão (a cada 2 semanas) para colheita contínua. Colha antes de florescer para melhor sabor.',
+    variedades: 'Verdão, Santo' },
+  { id: 'alecrim', nome: 'Alecrim', emoji: '🌿', cat: 'temperos',
+    meses: ['PC','PC','P','P','PC','PC','PC','PC','PC','PC','PC','PC'],
+    dias_colheita: [90, 120], espaco: '50×50cm', profundidade: '0.3cm',
+    dicas: 'Arbusto perene muito resistente. Não tolera solo encharcado. Plante em local ensolarado e bem drenado. Cresce por muitos anos.',
+    variedades: 'Comum, Rasteiro' },
+  { id: 'erva-doce', nome: 'Erva-doce (Funcho)', emoji: '🌿', cat: 'temperos',
+    meses: ['X','X','P','P','P','P','P','P','P','P','X','X'],
+    dias_colheita: [70, 100], espaco: '40×50cm', profundidade: '0.5cm',
+    dicas: 'Plante longe de outras ervas (alelopatia). Todas as partes são comestíveis: folhas, sementes e bulbo. Atrativa para insetos benéficos.',
+    variedades: 'Comum, Bulboso (Finochio)' },
+  { id: 'batata', nome: 'Batata inglesa', emoji: '🥔', cat: 'graos',
+    meses: ['X','X','X','X','X','P','P','X','X','P','P','X'],
+    dias_colheita: [90, 120], espaco: '30×70cm', profundidade: '10cm',
+    dicas: 'Use batata-semente certificada. Plante com o olho (broto) para cima. Amontoe terra conforme cresce. Colha quando as ramas murcharem.',
+    variedades: 'Asterix, Monalisa, Ágata, Bintje' },
+  { id: 'girassol', nome: 'Girassol', emoji: '🌻', cat: 'hortaliças',
+    meses: ['X','X','X','X','X','X','X','P','P','P','X','X'],
+    dias_colheita: [70, 90], espaco: '30×50cm', profundidade: '2cm',
+    dicas: 'Além de decorativo, atrai polinizadores para toda a horta! As sementes são nutritivas. Boa opção para rotação de culturas.',
+    variedades: 'Anão de jardim, Comum, Russo' }
+];
+
+const MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+let regiaoAtual = 'vale-taquari';
+let filtroAtual = 'todos';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const agora = new Date();
+  document.getElementById('mes-nome-atual').textContent = MESES_NOMES[agora.getMonth()];
+  preencherSelectCulturas();
+  renderizarCulturas();
+  carregarRegistros();
+  document.getElementById('form-data-plantio').value = agora.toISOString().split('T')[0];
+  document.getElementById('form-cultura').addEventListener('change', atualizarPreviewColheita);
+  document.getElementById('form-data-plantio').addEventListener('change', atualizarPreviewColheita);
+});
+
+function preencherSelectCulturas() {
+  const sel = document.getElementById('form-cultura');
+  const ordenadas = [...CULTURAS_BASE].sort((a,b) => a.nome.localeCompare(b.nome));
+  ordenadas.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.emoji + ' ' + c.nome;
+    sel.appendChild(opt);
+  });
+}
+
+function getStatusMes(cultura, mesIdx) { return cultura.meses[mesIdx] || 'X'; }
+function getMesAtual() { return new Date().getMonth(); }
+
+function podePlantarAgora(cultura) {
+  const s = getStatusMes(cultura, getMesAtual());
+  return s === 'P' || s === 'PC';
+}
+
+function renderizarCulturas() {
+  const grid = document.getElementById('culturas-grid');
+  const mesAtual = getMesAtual();
+  let culturas = CULTURAS_BASE;
+
+  if (filtroAtual === 'plantio-agora') {
+    culturas = culturas.filter(c => podePlantarAgora(c));
+  } else if (filtroAtual !== 'todos') {
+    culturas = culturas.filter(c => c.cat === filtroAtual);
+  }
+
+  grid.innerHTML = '';
+
+  if (culturas.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--texto-claro)">Nenhuma cultura encontrada para este filtro.</div>';
+    return;
+  }
+
+  culturas.forEach(cultura => {
+    const card = document.createElement('div');
+    card.className = 'cultura-card';
+
+    const statusAtual = getStatusMes(cultura, mesAtual);
+    let badgeClass = 'badge-nao';
+    let badgeTexto = 'Aguardar';
+    if (statusAtual === 'P' || statusAtual === 'PC') { badgeClass = 'badge-ok'; badgeTexto = '✓ Plantar'; }
+    else if (statusAtual === 'C') { badgeClass = 'badge-bom'; badgeTexto = '🌾 Colher'; }
+
+    const mesesHTML = cultura.meses.map((s, i) => {
+      let cls = '';
+      if (s === 'P') cls = 'plantio';
+      else if (s === 'C') cls = 'colheita';
+      else if (s === 'PC') cls = 'plantio-colheita';
+      const atual = i === mesAtual ? ' atual' : '';
+      const label = s === 'P' ? 'Plantio' : s === 'C' ? 'Colheita' : s === 'PC' ? 'Plantio e Colheita' : 'Não recomendado';
+      return '<div class="mes-bloco ' + cls + atual + '" title="' + MESES_NOMES[i] + ': ' + label + '">' + MESES_ABREV[i].slice(0,1) + '</div>';
+    }).join('');
+
+    const minDias = cultura.dias_colheita[0];
+    const maxDias = cultura.dias_colheita[1];
+
+    card.innerHTML =
+      '<div class="cultura-card-header">' +
+        '<div class="cultura-emoji">' + cultura.emoji + '</div>' +
+        '<div class="cultura-info"><h3>' + cultura.nome + '</h3><div class="cultura-cat">' + nomeCat(cultura.cat) + '</div></div>' +
+        '<span class="cultura-badge ' + badgeClass + '">' + badgeTexto + '</span>' +
+      '</div>' +
+      '<div class="cultura-meses"><div class="meses-label">Calendário de plantio e colheita</div><div class="meses-barra">' + mesesHTML + '</div></div>' +
+      '<div class="cultura-detalhes">' +
+        '<div class="detalhe-item"><span>⏱</span><span>' + minDias + '–' + maxDias + ' dias</span></div>' +
+        '<div class="detalhe-item"><span>📐</span><span>' + cultura.espaco + '</span></div>' +
+      '</div>' +
+      '<button class="btn-plantar" onclick="abrirDetalheCultura(\'' + cultura.id + '\', event)">Ver detalhes e registrar plantio</button>';
+
+    grid.appendChild(card);
+  });
+}
+
+function nomeCat(cat) {
+  const nomes = {
+    'hortaliças': '🥬 Hortaliças', legumes: '🥕 Legumes e Raízes',
+    frutas: '🍉 Frutas', graos: '🌽 Grãos e Tubérculos', temperos: '🌿 Temperos e Ervas'
+  };
+  return nomes[cat] || cat;
+}
+
+function filtrar(cat, btn) {
+  filtroAtual = cat;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderizarCulturas();
+}
+
+function trocarRegiao(regiao) {
+  regiaoAtual = regiao;
+  const r = REGIOES[regiao];
+  if (r) {
+    document.getElementById('hero-titulo').textContent = 'Calendário de Plantio';
+    document.getElementById('hero-subtitulo').textContent = r.nome + ' — ' + r.desc;
+  }
+  renderizarCulturas();
+}
+
+function abrirDetalheCultura(id, event) {
+  event.stopPropagation();
+  const cultura = CULTURAS_BASE.find(c => c.id === id);
+  if (!cultura) return;
+
+  const mesAtual = getMesAtual();
+  const mesesHTML = cultura.meses.map((s, i) => {
+    let cls = '';
+    if (s === 'P') cls = 'plantio';
+    else if (s === 'C') cls = 'colheita';
+    else if (s === 'PC') cls = 'plantio-colheita';
+    const atual = i === mesAtual ? ' atual' : '';
+    return '<div class="mes-bloco ' + cls + atual + '" title="' + MESES_NOMES[i] + '">' + MESES_ABREV[i] + '</div>';
+  }).join('');
+
+  const hoje = new Date().toISOString().split('T')[0];
+
+  document.getElementById('modal-conteudo').innerHTML =
+    '<div class="modal-header">' +
+      '<div class="modal-emoji">' + cultura.emoji + '</div>' +
+      '<div><h2>' + cultura.nome + '</h2><div style="font-size:0.8rem;color:var(--texto-claro)">' + nomeCat(cultura.cat) + '</div></div>' +
+      '<button class="modal-close" onclick="fecharModalDireto()">✕</button>' +
+    '</div>' +
+    '<div class="modal-section"><h4>Calendário</h4><div class="meses-barra" style="margin-bottom:6px">' + mesesHTML + '</div>' +
+      '<div style="font-size:0.78rem;color:var(--texto-claro)">Mês atual destacado com borda</div></div>' +
+    '<div class="modal-section"><h4>Informações de cultivo</h4><p>' + cultura.dicas + '</p></div>' +
+    '<div class="modal-section"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">' +
+      '<div class="data-item"><div class="data-label">Colheita em</div><div class="data-valor">' + cultura.dias_colheita[0] + '–' + cultura.dias_colheita[1] + ' dias</div></div>' +
+      '<div class="data-item"><div class="data-label">Espaçamento</div><div class="data-valor">' + cultura.espaco + '</div></div>' +
+      '<div class="data-item"><div class="data-label">Profundidade</div><div class="data-valor">' + cultura.profundidade + '</div></div>' +
+    '</div></div>' +
+    '<div class="modal-section"><h4>Variedades recomendadas</h4><p>' + cultura.variedades + '</p></div>' +
+    '<div class="simulador"><h4>🗓 Simular data de colheita</h4>' +
+      '<div class="simulador-form">' +
+        '<input type="date" id="sim-data" value="' + hoje + '" onchange="simularColheita(\'' + cultura.id + '\')">' +
+        '<button onclick="simularColheita(\'' + cultura.id + '\')">Calcular</button>' +
+      '</div>' +
+      '<div class="simulador-resultado" id="sim-resultado"></div>' +
+    '</div>' +
+    '<button class="btn-registrar-modal" onclick="abrirFormComCultura(\'' + cultura.id + '\')">📋 Registrar plantio desta cultura</button>';
+
+  document.getElementById('modal-overlay').classList.add('open');
+  simularColheita(cultura.id);
+}
+
+function simularColheita(id) {
+  const cultura = CULTURAS_BASE.find(c => c.id === id);
+  const dataInput = document.getElementById('sim-data');
+  if (!dataInput || !cultura) return;
+
+  const dataPlantio = new Date(dataInput.value + 'T12:00:00');
+  if (isNaN(dataPlantio)) return;
+
+  const minDias = cultura.dias_colheita[0];
+  const maxDias = cultura.dias_colheita[1];
+
+  const dataMin = new Date(dataPlantio);
+  dataMin.setDate(dataMin.getDate() + minDias);
+
+  const dataMax = new Date(dataPlantio);
+  dataMax.setDate(dataMax.getDate() + maxDias);
+
+  const fmt = d => d.toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  const res = document.getElementById('sim-resultado');
+  res.innerHTML = 'Plantando em <strong>' + dataPlantio.toLocaleDateString('pt-BR') + '</strong>, a colheita é esperada entre:<br>' +
+    '🌱 <strong>' + fmt(dataMin) + '</strong> e 🌾 <strong>' + fmt(dataMax) + '</strong>';
+  res.classList.add('show');
+}
+
+function fecharModal(e) { if (e.target === document.getElementById('modal-overlay')) fecharModalDireto(); }
+function fecharModalDireto() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+function abrirFormRegistro() {
+  document.getElementById('form-cultura').value = '';
+  document.getElementById('form-local').value = '';
+  document.getElementById('form-qtd').value = '';
+  document.getElementById('form-obs').value = '';
+  document.getElementById('form-data-plantio').value = new Date().toISOString().split('T')[0];
+  document.getElementById('preview-colheita').style.display = 'none';
+  fecharModalDireto();
+  document.getElementById('form-overlay').classList.add('open');
+}
+
+function abrirFormComCultura(id) {
+  fecharModalDireto();
+  document.getElementById('form-cultura').value = id;
+  document.getElementById('form-data-plantio').value = new Date().toISOString().split('T')[0];
+  document.getElementById('form-local').value = '';
+  document.getElementById('form-qtd').value = '';
+  document.getElementById('form-obs').value = '';
+  atualizarPreviewColheita();
+  document.getElementById('form-overlay').classList.add('open');
+}
+
+function atualizarPreviewColheita() {
+  const culturaId = document.getElementById('form-cultura').value;
+  const dataVal = document.getElementById('form-data-plantio').value;
+  const preview = document.getElementById('preview-colheita');
+
+  if (!culturaId || !dataVal) { preview.style.display = 'none'; return; }
+
+  const cultura = CULTURAS_BASE.find(c => c.id === culturaId);
+  if (!cultura) { preview.style.display = 'none'; return; }
+
+  const dataPlantio = new Date(dataVal + 'T12:00:00');
+  const dataMin = new Date(dataPlantio); dataMin.setDate(dataMin.getDate() + cultura.dias_colheita[0]);
+  const dataMax = new Date(dataPlantio); dataMax.setDate(dataMax.getDate() + cultura.dias_colheita[1]);
+
+  const fmt = d => d.toLocaleDateString('pt-BR', {day:'2-digit', month:'long'});
+
+  preview.innerHTML = '🌾 Colheita estimada: <strong>' + fmt(dataMin) + '</strong> a <strong>' + fmt(dataMax) + '</strong>';
+  preview.style.display = 'block';
+}
+
+function fecharForm(e) { if (e.target === document.getElementById('form-overlay')) fecharFormDireto(); }
+function fecharFormDireto() { document.getElementById('form-overlay').classList.remove('open'); }
+
+function salvarRegistro() {
+  const culturaId = document.getElementById('form-cultura').value;
+  const dataPlantio = document.getElementById('form-data-plantio').value;
+  const local = document.getElementById('form-local').value;
+  const qtd = document.getElementById('form-qtd').value;
+  const obs = document.getElementById('form-obs').value;
+
+  if (!culturaId || !dataPlantio) { mostrarToast('Preencha a cultura e a data de plantio!', true); return; }
+
+  const cultura = CULTURAS_BASE.find(c => c.id === culturaId);
+  const dp = new Date(dataPlantio + 'T12:00:00');
+  const dataColheitaMin = new Date(dp); dataColheitaMin.setDate(dataColheitaMin.getDate() + cultura.dias_colheita[0]);
+  const dataColheitaMax = new Date(dp); dataColheitaMax.setDate(dataColheitaMax.getDate() + cultura.dias_colheita[1]);
+
+  const registro = {
+    id: Date.now().toString(),
+    cultura_id: culturaId,
+    cultura_nome: cultura.nome,
+    cultura_emoji: cultura.emoji,
+    data_plantio: dataPlantio,
+    data_colheita_min: dataColheitaMin.toISOString().split('T')[0],
+    data_colheita_max: dataColheitaMax.toISOString().split('T')[0],
+    local: local,
+    quantidade: qtd,
+    observacoes: obs,
+    status: 'crescendo'
+  };
+
+  const registros = carregarDoStorage();
+  registros.unshift(registro);
+  const ok = salvarNoStorage(registros);
+
+  if (!ok) {
+    mostrarToast('Erro ao salvar o registro. Espaço de armazenamento pode estar cheio.', true);
+    return;
+  }
+
+  fecharFormDireto();
+  mostrarToast('✅ Plantio registrado com sucesso!');
+  carregarRegistros();
+  trocarAba('registros', document.querySelectorAll('nav button')[1]);
+}
+
+function carregarRegistros() {
+  const registros = carregarDoStorage();
+  renderizarRegistros(registros);
+}
+
+function renderizarRegistros(registros) {
+  const lista = document.getElementById('registros-lista');
+
+  if (registros.length === 0) {
+    lista.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🌱</div>' +
+      '<p>Nenhum plantio registrado ainda.<br>Use o botão acima para começar a registrar sua horta!</p></div>';
+    return;
+  }
+
+  lista.innerHTML = '';
+
+  registros.forEach(reg => {
+    const hoje = new Date();
+    const dp = new Date(reg.data_plantio + 'T12:00:00');
+    const dcMin = new Date(reg.data_colheita_min + 'T12:00:00');
+    const dcMax = new Date(reg.data_colheita_max + 'T12:00:00');
+
+    const diasTotais = Math.round((dcMin - dp) / 86400000);
+    const diasMax = Math.round((dcMax - dp) / 86400000);
+    const diasPassados = Math.round((hoje - dp) / 86400000);
+    const progresso = Math.min(100, Math.max(0, Math.round((diasPassados / diasTotais) * 100)));
+
+    let statusTxt = 'Crescendo';
+    let statusCls = 'status-crescendo';
+    let progressoCls = '';
+
+    if (diasPassados >= diasMax) {
+      statusTxt = 'Colher urgente!'; statusCls = 'status-colher'; progressoCls = 'pronto';
+    } else if (diasPassados >= diasTotais) {
+      statusTxt = 'Pronto para colher'; statusCls = 'status-colher'; progressoCls = 'pronto';
+    } else if (progresso >= 85) {
+      statusTxt = 'Quase na hora!'; statusCls = 'status-quase'; progressoCls = 'colhendo';
+    }
+
+    if (reg.status === 'colhido') { statusTxt = 'Colhido ✓'; statusCls = 'status-colhido'; }
+
+    const fmtData = d => new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'});
+
+    const card = document.createElement('div');
+    card.className = 'registro-card';
+    card.innerHTML =
+      '<div class="registro-card-top">' +
+        '<div class="registro-emoji">' + reg.cultura_emoji + '</div>' +
+        '<div><div class="registro-titulo">' + reg.cultura_nome + '</div>' +
+        '<div class="registro-local">' + (reg.local || 'Sem localização') + (reg.quantidade ? ' · ' + reg.quantidade : '') + '</div>' +
+        '<span class="status-chip ' + statusCls + '">' + statusTxt + '</span></div>' +
+      '</div>' +
+      '<div class="registro-datas">' +
+        '<div class="data-item"><div class="data-label">Plantado em</div><div class="data-valor">' + fmtData(reg.data_plantio) + '</div></div>' +
+        '<div class="data-item colheita-estimada"><div class="data-label">Colheita estimada</div><div class="data-valor">' + fmtData(reg.data_colheita_min) + '</div></div>' +
+      '</div>' +
+      '<div class="progresso-barra-wrap"><div class="progresso-label"><span>Progresso até colheita</span><span>' + Math.min(100, progresso) + '%</span></div>' +
+        '<div class="progresso-barra"><div class="progresso-fill ' + progressoCls + '" style="width:' + Math.min(100,progresso) + '%"></div></div></div>' +
+      (reg.observacoes ? '<div class="registro-obs">' + reg.observacoes + '</div>' : '') +
+      '<div class="registro-acoes">' +
+        (reg.status !== 'colhido' ? '<button class="btn-reg-acao" onclick="marcarColhido(\'' + reg.id + '\')">🌾 Marcar colhido</button>' : '') +
+        '<button class="btn-reg-acao danger" onclick="excluirRegistro(\'' + reg.id + '\')">🗑 Excluir</button>' +
+      '</div>';
+    lista.appendChild(card);
+  });
+}
+
+function marcarColhido(id) {
+  const registros = carregarDoStorage();
+  const reg = registros.find(r => r.id === id);
+  if (reg) reg.status = 'colhido';
+  salvarNoStorage(registros);
+  mostrarToast('🌾 Colheita registrada!');
+  carregarRegistros();
+}
+
+function excluirRegistro(id) {
+  if (!confirm('Excluir este registro de plantio?')) return;
+  const registros = carregarDoStorage().filter(r => r.id !== id);
+  salvarNoStorage(registros);
+  mostrarToast('Registro removido.');
+  carregarRegistros();
+}
+
+function trocarAba(aba, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + aba).classList.add('active');
+  btn.classList.add('active');
+  if (aba === 'registros') carregarRegistros();
+}
+
+function mostrarToast(msg, erro) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (erro ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
