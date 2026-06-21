@@ -357,6 +357,7 @@
       <button class="active" onclick="trocarAba('calendario', this)">📅 <span class="nav-label">Calendário</span></button>
       <button onclick="trocarAba('registros', this)">📋 <span class="nav-label">Meus Plantios</span></button>
       <button onclick="trocarAba('enxertia', this)">🔗 <span class="nav-label">Enxertia</span></button>
+      <button onclick="abrirBackup()" title="Backup dos dados">💾 <span class="nav-label">Backup</span></button>
     </nav>
   </div>
 </header>
@@ -502,6 +503,26 @@
     <div class="form-acoes">
       <button class="btn-cancelar" onclick="fecharFormEnxertiaDireto()">Cancelar</button>
       <button class="btn-salvar" onclick="salvarEnxertia()">💾 Salvar enxertia</button>
+    </div>
+  </div>
+</div>
+
+<div class="form-overlay" id="backup-overlay" onclick="fecharBackup(event)">
+  <div class="form-modal">
+    <h2>💾 Backup dos dados</h2>
+    <div class="modal-section">
+      <h4>Exportar</h4>
+      <p style="margin-bottom: 0.8rem;">Salva um arquivo no seu celular/PC com todos os seus plantios e enxertias registrados. Guarde esse arquivo num lugar seguro (Google Drive, e-mail para você mesmo, etc).</p>
+      <button class="btn-salvar" onclick="exportarBackup()" style="width:100%">⬇️ Exportar tudo para arquivo</button>
+    </div>
+    <div class="modal-section">
+      <h4>Importar</h4>
+      <p style="margin-bottom: 0.8rem;">Restaura os dados a partir de um arquivo de backup exportado anteriormente. <strong>Atenção:</strong> isso substitui os dados atuais salvos neste navegador.</p>
+      <input type="file" id="backup-file-input" accept="application/json" style="display:none" onchange="importarBackup(event)">
+      <button class="btn-salvar" onclick="document.getElementById('backup-file-input').click()" style="width:100%; background: var(--terra);">⬆️ Importar de arquivo</button>
+    </div>
+    <div class="form-acoes">
+      <button class="btn-cancelar" onclick="fecharBackupDireto()" style="flex:1">Fechar</button>
     </div>
   </div>
 </div>
@@ -892,6 +913,7 @@ function getFrutiferaById(id) {
 }
 
 
+const MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 let filtroAtual = 'todos';
@@ -1457,6 +1479,86 @@ function excluirEnxertia(id) {
   salvarNoStorage(registros, STORAGE_KEY_ENXERTIA);
   mostrarToast('Registro removido.');
   carregarEnxertias();
+}
+
+// ============================================================
+// BACKUP (EXPORTAR / IMPORTAR)
+// ============================================================
+function abrirBackup() {
+  document.getElementById('backup-overlay').classList.add('open');
+}
+
+function fecharBackup(e) {
+  if (e.target === document.getElementById('backup-overlay')) fecharBackupDireto();
+}
+
+function fecharBackupDireto() {
+  document.getElementById('backup-overlay').classList.remove('open');
+}
+
+function exportarBackup() {
+  const dados = {
+    app: 'horta-rs',
+    versao: 1,
+    exportado_em: new Date().toISOString(),
+    plantios: carregarDoStorage(STORAGE_KEY),
+    enxertias: carregarDoStorage(STORAGE_KEY_ENXERTIA)
+  };
+
+  const json = JSON.stringify(dados, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const dataAtual = new Date().toISOString().split('T')[0];
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'horta-rs-backup-' + dataAtual + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  mostrarToast('✅ Backup exportado! Salve o arquivo em local seguro.');
+}
+
+function importarBackup(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const dados = JSON.parse(e.target.result);
+
+      if (!dados || (!Array.isArray(dados.plantios) && !Array.isArray(dados.enxertias))) {
+        mostrarToast('Arquivo inválido: não parece ser um backup do Horta RS.', true);
+        return;
+      }
+
+      const confirmar = confirm(
+        'Isso vai SUBSTITUIR todos os plantios e enxertias salvos atualmente neste navegador pelos dados do arquivo. Deseja continuar?'
+      );
+      if (!confirmar) return;
+
+      if (Array.isArray(dados.plantios)) {
+        salvarNoStorage(dados.plantios, STORAGE_KEY);
+      }
+      if (Array.isArray(dados.enxertias)) {
+        salvarNoStorage(dados.enxertias, STORAGE_KEY_ENXERTIA);
+      }
+
+      mostrarToast('✅ Backup importado com sucesso!');
+      carregarRegistros();
+      carregarEnxertias();
+      fecharBackupDireto();
+    } catch(err) {
+      console.error(err);
+      mostrarToast('Erro ao ler o arquivo. Verifique se é um backup válido.', true);
+    } finally {
+      event.target.value = '';
+    }
+  };
+  reader.readAsText(file);
 }
 
 function mostrarToast(msg, erro) {
