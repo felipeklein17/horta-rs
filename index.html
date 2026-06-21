@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Horta RS — Calendário de Plantio</title>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAFdElEQVR4nO3dy24TZxiH8deRr4OWVmqlJnABVGLDstuEBCQSFiGgXlAxAVVJQI2JWSH1BnpadAlhDeFG3EU7ruOMPafvNP/v+UmRUA5jM354832TURhYYDfu35yGfkzE8/6Xd4OQj+f9wTbu3SBgzJyfvvfanJeDEzHq8BG30wMSMtpwGbaTAxEyXHARdqcDEDJ86BJ26y/c2CFm+HM+bhf1WpsvImb41raxRv8KCBkxNJnWtSc0MSOWJu3VCpqYEVvdBiuDJmakok6Lw8qjkDN6ZOVie317g5yRnA+vz5d2u3TJQcxI1ao2S4MmZqRuWaOtfrACpOrKWmT9LtMZ/fHh7PJ6mgkNKZeCZjqjbxabZUJDyixopjP6ar5dJjSk/P+jb+YzBKyZma1vsdxAvxUND83MpoxniGANDSkEDSmD77bWWW9AxpDlM5Sw5IAUgoYUgoYUgoYUNoWQwoSGFIKGlCH3cUAJExpSCBpSuMoBKUxoSCFoSCFoSCFoSCFoSOEqB6QwoSGFoCGFezkghQkNKWwKIYUJDSkEDSkEDSnV/zUyeu3op6OlH3v448NgzyMUghaxKtyccJWjp46eHnU/iOBrz4TuCScBZ4CgE0fIzXCVI2HE3Bz3ciTo+OlxkMdRfO3ZFCbmeBQmZjOT3BSy5EhI0JhFEXQiiNkNgk5AjJj3nuwFf8wQCBpSCDoylhpucZUjouNnEWMWfd2Z0JBC0JFEnc7CCDpDe481r3CYEXQUTGd/uJcjQ8qvOVc5Smzub6/8+JsXr1sf++TwpPXXOiP8mnM/tFUHvOrzu8Qdw+7Bbuyn4FXWa+jN/e3GMZcdo64kprO4bIPuGrKvY/mkPp3NMg3aR4BVx2Q6h5HVpnDzkedJmvC53H2kP53NMtgUeo944bHePO/XJlGNbNAhQ05dLtPZzGzwzQ/fJvyNsp3YMVdN6ZPnYdfTOQUtN6Fjx7yoLN6ywHxFnlPMZkxob4opXTfoeS7izi3kwnA6levZJodj2zrYifocVp3XqnP+YP/B7M8vX7xs9LjzX5sjuSVHKrYOdmxyOO58nNwDbUr2ByuTw7GToNAvskEXYkYde9mTI/mgkZcsgmbpkY81m5rl8DZ5Fifqt3//evWdCZwP1bcsJnQhVtQIJ6ugzeJEXTql4UV2QZsxqZVlGbQZUavKZlNY9jYZjW0yChP2pWVHAn931Td+L4eZnY1O7e6Te8Eej3PuD/dy/OdsdDr7s6u4z0an9urnV06OhXoIusR83GbVgS9+PuIh6BoItj+yvcoBTVn9GoNkcM69YUJDCkFDCkFDCkFDCpvCGDjn3jChIYV7OSLgnPvDhIYUgoYUgoYUrnLEwDn3hgkNKQQNKQQNKQQNKQQNKVzliIFz7g0TGlK4lyMCzrk/TGhIIWhIYVMYA+fcGyY0pBA0pAy+uvM13wAhgwkNKQQNKVzlgBQmNKQQNKRwLwekMKEhhaAhhasckMKEhhSChhSChhSChhQ2hZDChIYUgoYUgoYU7uWAFCY0pHCVA1KY0JBC0JBC0JBC0JAyMDP78vZ1tobovU+/fRwwoSGFoCGFoCFlzezftUfsJwJ0UTQ8LN7BPR1QMAuanqFgtoa++P0Tyw700ny7bAoh5VLQTGn0zWKzTGhIuRI0Uxp9UdbqsOwTueKBvipdclz8wZRG2pY1unQNTdRI1ao2V24KiRqpqWqSqxyQUmsCX/v+C7aJiO7znxeVvdaa0HUOBPhUt8HaSw6iRixN2msVKUsQhNBmiLbaFDKt4Vvbxlpf5SBq+NKlLSdRXrvFEgTdff6r+5B0OmUJG224CLngZdlA2KjDZcgF7+tg4sY8HxHPC76xI/C8+A540T/ANKIuc/ZXxQAAAABJRU5ErkJggg==">
+<link rel="icon" type="image/png" sizes="192x192" href="data:image/png;base64,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">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Horta RS">
+<meta name="theme-color" content="#1e3a1f">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -350,6 +356,7 @@
     <nav>
       <button class="active" onclick="trocarAba('calendario', this)">📅 <span class="nav-label">Calendário</span></button>
       <button onclick="trocarAba('registros', this)">📋 <span class="nav-label">Meus Plantios</span></button>
+      <button onclick="trocarAba('enxertia', this)">🔗 <span class="nav-label">Enxertia</span></button>
     </nav>
   </div>
 </header>
@@ -394,6 +401,14 @@
     </div>
     <div class="registros-lista" id="registros-lista"></div>
   </div>
+
+  <div id="tab-enxertia" class="tab-content">
+    <div class="registros-header">
+      <h2>Enxertias</h2>
+      <button class="btn-novo-registro" onclick="abrirFormEnxertia()">＋ Registrar enxertia</button>
+    </div>
+    <div class="registros-lista" id="enxertia-lista"></div>
+  </div>
 </main>
 
 <div class="modal-overlay" id="modal-overlay" onclick="fecharModal(event)">
@@ -433,16 +448,75 @@
   </div>
 </div>
 
+<div class="form-overlay" id="form-enxertia-overlay" onclick="fecharFormEnxertia(event)">
+  <div class="form-modal">
+    <h2>🔗 Registrar nova enxertia</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data da enxertia *</label>
+        <input type="date" id="enx-data">
+      </div>
+      <div class="form-group">
+        <label>Número / código</label>
+        <input type="text" id="enx-numero" placeholder="Ex: 1, E-01...">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Frutífera (porta-enxerto) *</label>
+        <select id="enx-frutifera" onchange="atualizarSelectsEnxertia()">
+          <option value="">Selecione...</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Porta-enxerto (cavalo) *</label>
+        <select id="enx-porta-enxerto" onchange="atualizarVariedadesEnxertia()">
+          <option value="">Selecione a frutífera primeiro...</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Variedade enxertada (cavaleiro) *</label>
+      <select id="enx-variedade">
+        <option value="">Selecione o porta-enxerto primeiro...</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Local / vaso</label>
+        <input type="text" id="enx-local" placeholder="Ex: Vaso 3, fileira do fundo...">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="enx-status">
+          <option value="observacao">Em observação</option>
+          <option value="pegou">Pegou</option>
+          <option value="nao-pegou">Não pegou</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="enx-obs" placeholder="Técnica usada, condições do tempo, idade do porta-enxerto..."></textarea>
+    </div>
+    <div class="form-acoes">
+      <button class="btn-cancelar" onclick="fecharFormEnxertiaDireto()">Cancelar</button>
+      <button class="btn-salvar" onclick="salvarEnxertia()">💾 Salvar enxertia</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // Horta RS — dados salvos localmente no navegador (localStorage)
 
 const STORAGE_KEY = 'horta_rs_plantios';
+const STORAGE_KEY_ENXERTIA = 'horta_rs_enxertias';
 
-function carregarDoStorage() {
+function carregarDoStorage(key) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(key || STORAGE_KEY);
     return raw ? JSON.parse(raw) : [];
   } catch(e) {
     console.error('Erro ao ler localStorage:', e);
@@ -450,9 +524,9 @@ function carregarDoStorage() {
   }
 }
 
-function salvarNoStorage(registros) {
+function salvarNoStorage(registros, key) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(registros));
+    localStorage.setItem(key || STORAGE_KEY, JSON.stringify(registros));
     return true;
   } catch(e) {
     console.error('Erro ao salvar no localStorage:', e);
@@ -648,7 +722,176 @@ const CULTURAS_BASE = [
     variedades: 'Anão de jardim, Comum, Russo' }
 ];
 
-const MESES_ABREV = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// ============================================================
+// BASE DE DADOS DE ENXERTIA
+// Cada frutífera tem: lista de porta-enxertos (cavalo) e lista de
+// variedades (cavaleiro/copa) compatíveis entre si dentro do grupo.
+// Fontes: Embrapa, literatura de citricultura e fruticultura geral.
+// ============================================================
+const FRUTIFERAS_ENXERTIA = [
+  {
+    id: 'citrus', nome: 'Citrus (laranja, limão, bergamota...)', emoji: '🍊',
+    portaEnxertos: [
+      'Limão Cravo',
+      'Poncirus trifoliata',
+      'Tangerina Cleópatra',
+      'Citrumelo Swingle',
+      'Limão Volkameriano',
+      'Citrange Troyer',
+      'Trifoliata Flying Dragon'
+    ],
+    variedades: [
+      'Laranja Umbigo (Bahia)',
+      'Laranja do Céu',
+      'Laranja Pêra',
+      'Laranja Valência',
+      'Laranja Natal',
+      'Limão Taiti',
+      'Limão Galego',
+      'Limão Cravo (como copa)',
+      'Limão Siciliano',
+      'Bergamota Poncã',
+      'Bergamota Montenegrina',
+      'Bergamota Caí',
+      'Tangerina Clementina',
+      'Pomelo / Grapefruit'
+    ],
+    nota: 'No Rio Grande do Sul, o Poncirus trifoliata é o porta-enxerto mais usado (mais de 90% dos pomares) por sua resistência ao frio. O Limão Cravo é o mais usado no Brasil em geral, mas tem menor tolerância a geadas fortes.'
+  },
+  {
+    id: 'abacate', nome: 'Abacate', emoji: '🥑',
+    portaEnxertos: [
+      'Abacate Margarida (raça mexicana)',
+      'Abacate Geada (raça mexicana)',
+      'Abacate comum / semente franca',
+      'Raça antilhana (regiões mais quentes)'
+    ],
+    variedades: [
+      'Hass',
+      'Fortuna',
+      'Geada',
+      'Margarida',
+      'Quintal',
+      'Breda'
+    ],
+    nota: 'Porta-enxertos de raça mexicana (Margarida, Geada) são mais tolerantes ao frio e mais indicados para o RS. A raça antilhana é mais sensível a geadas.'
+  },
+  {
+    id: 'noz-pecan', nome: 'Noz-pecã', emoji: '🌰',
+    portaEnxertos: [
+      'Noz-pecã (semente franca / seedling)',
+      'Cultivar Barton (como porta-enxerto)'
+    ],
+    variedades: [
+      'Barton',
+      'Stuart',
+      'Shawnee',
+      'Western Schley',
+      'Desejável (Desirable)'
+    ],
+    nota: 'Pouca diversidade de porta-enxertos clonais no Brasil — a maioria dos pomares usa mudas obtidas por semente (seedling) e depois enxertadas com a variedade desejada.'
+  },
+  {
+    id: 'pessego', nome: 'Pêssego', emoji: '🍑',
+    portaEnxertos: [
+      'Pessegueiro Capdeboscq',
+      'Pessegueiro Okinawa',
+      'Pessegueiro Aldrighi',
+      'Umezeiro (para solos mais úmidos)'
+    ],
+    variedades: [
+      'Chimarrita',
+      'Chiripá',
+      'Coral',
+      'Eldorado',
+      'Maciel',
+      'Marfim',
+      'Esmeralda',
+      'Compota / pêssego para conserva'
+    ],
+    nota: 'Capdeboscq e Aldrighi são os porta-enxertos mais tradicionais no Sul do Brasil. Cultura ainda não detalhada por você — ajuste as opções conforme avançar com pêssego.'
+  },
+  {
+    id: 'macieira', nome: 'Macieira (maçã)', emoji: '🍎',
+    portaEnxertos: [
+      'Marubakaido',
+      'M9 (porta-enxerto ananicante)',
+      'M7',
+      'Maruba'
+    ],
+    variedades: [
+      'Gala',
+      'Fuji',
+      'Eva',
+      'Princesa',
+      'Catarina'
+    ],
+    nota: 'Cultura tradicional da Serra Gaúcha e Santa Catarina. M9 e M7 são porta-enxertos ananicantes (deixam a planta menor), Marubakaido é mais vigoroso.'
+  },
+  {
+    id: 'pereira', nome: 'Pereira (pera)', emoji: '🍐',
+    portaEnxertos: [
+      'Marmeleiro (Quince)',
+      'Pyrus calleryana',
+      'Pyrus betulifolia'
+    ],
+    variedades: [
+      'Packham\u0027s Triumph',
+      'Rocha',
+      'Williams',
+      'Tenra'
+    ],
+    nota: 'Marmeleiro é o porta-enxerto mais comum para pera, mas exige variedade compatível (algumas peras têm incompatibilidade direta com marmeleiro, exigindo um cultivar-ponte).'
+  },
+  {
+    id: 'ameixa', nome: 'Ameixa', emoji: '🟣',
+    portaEnxertos: [
+      'Ameixeira Comum / seedling',
+      'Mirabolano'
+    ],
+    variedades: [
+      'Gulab Rosa',
+      'Reubennel',
+      'Fortune',
+      'Letícia'
+    ],
+    nota: 'Cultura com menos tradição no Vale do Taquari — confirme disponibilidade local de porta-enxertos antes de expandir.'
+  },
+  {
+    id: 'figo', nome: 'Figo', emoji: '🟢',
+    portaEnxertos: [
+      'Figueira comum (geralmente propagada por estaca, sem porta-enxerto)'
+    ],
+    variedades: [
+      'Roxo de Valinhos',
+      'Troiano'
+    ],
+    nota: 'O figo normalmente é propagado por estaquia direta, sem enxertia. Incluído aqui apenas como referência, caso você queira experimentar.'
+  },
+  {
+    id: 'videira', nome: 'Videira (uva)', emoji: '🍇',
+    portaEnxertos: [
+      'IAC 766 Campinas',
+      'Paulsen 1103',
+      'Riparia do Traviú (420-A)',
+      'SO4'
+    ],
+    variedades: [
+      'Niágara Rosada',
+      'Niágara Branca',
+      'Isabel',
+      'BRS Violeta',
+      'Bordô (Concord)'
+    ],
+    nota: 'Porta-enxertos de videira são escolhidos principalmente por resistência à filoxera e adaptação ao solo; o RS tem forte tradição vitícola na Serra Gaúcha.'
+  }
+];
+
+function getFrutiferaById(id) {
+  return FRUTIFERAS_ENXERTIA.find(f => f.id === id);
+}
+
+
 const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 let filtroAtual = 'todos';
@@ -1007,6 +1250,213 @@ function trocarAba(aba, btn) {
   document.getElementById('tab-' + aba).classList.add('active');
   btn.classList.add('active');
   if (aba === 'registros') carregarRegistros();
+  if (aba === 'enxertia') carregarEnxertias();
+}
+
+// ============================================================
+// ABA DE ENXERTIA
+// ============================================================
+function preencherSelectFrutiferas() {
+  const sel = document.getElementById('enx-frutifera');
+  sel.innerHTML = '<option value="">Selecione...</option>';
+  FRUTIFERAS_ENXERTIA.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = f.emoji + ' ' + f.nome;
+    sel.appendChild(opt);
+  });
+}
+
+function atualizarSelectsEnxertia() {
+  const frutiferaId = document.getElementById('enx-frutifera').value;
+  const selPortaEnxerto = document.getElementById('enx-porta-enxerto');
+  const selVariedade = document.getElementById('enx-variedade');
+
+  selPortaEnxerto.innerHTML = '';
+  selVariedade.innerHTML = '<option value="">Selecione o porta-enxerto primeiro...</option>';
+
+  if (!frutiferaId) {
+    selPortaEnxerto.innerHTML = '<option value="">Selecione a frutífera primeiro...</option>';
+    return;
+  }
+
+  const f = getFrutiferaById(frutiferaId);
+  if (!f) return;
+
+  selPortaEnxerto.innerHTML = '<option value="">Selecione...</option>';
+  f.portaEnxertos.forEach(pe => {
+    const opt = document.createElement('option');
+    opt.value = pe;
+    opt.textContent = pe;
+    selPortaEnxerto.appendChild(opt);
+  });
+
+  atualizarVariedadesEnxertia();
+}
+
+function atualizarVariedadesEnxertia() {
+  const frutiferaId = document.getElementById('enx-frutifera').value;
+  const selVariedade = document.getElementById('enx-variedade');
+
+  if (!frutiferaId) {
+    selVariedade.innerHTML = '<option value="">Selecione a frutífera primeiro...</option>';
+    return;
+  }
+
+  const f = getFrutiferaById(frutiferaId);
+  if (!f) return;
+
+  selVariedade.innerHTML = '<option value="">Selecione...</option>';
+  f.variedades.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    selVariedade.appendChild(opt);
+  });
+}
+
+function proximoNumeroEnxertia() {
+  const registros = carregarDoStorage(STORAGE_KEY_ENXERTIA);
+  const numeros = registros
+    .map(r => parseInt(r.numero, 10))
+    .filter(n => !isNaN(n));
+  const max = numeros.length ? Math.max(...numeros) : 0;
+  return String(max + 1);
+}
+
+function abrirFormEnxertia() {
+  preencherSelectFrutiferas();
+  document.getElementById('enx-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('enx-numero').value = proximoNumeroEnxertia();
+  document.getElementById('enx-frutifera').value = '';
+  atualizarSelectsEnxertia();
+  document.getElementById('enx-local').value = '';
+  document.getElementById('enx-status').value = 'observacao';
+  document.getElementById('enx-obs').value = '';
+  document.getElementById('form-enxertia-overlay').classList.add('open');
+}
+
+function fecharFormEnxertia(e) {
+  if (e.target === document.getElementById('form-enxertia-overlay')) fecharFormEnxertiaDireto();
+}
+
+function fecharFormEnxertiaDireto() {
+  document.getElementById('form-enxertia-overlay').classList.remove('open');
+}
+
+function salvarEnxertia() {
+  const data = document.getElementById('enx-data').value;
+  const numero = document.getElementById('enx-numero').value.trim();
+  const frutiferaId = document.getElementById('enx-frutifera').value;
+  const portaEnxerto = document.getElementById('enx-porta-enxerto').value;
+  const variedade = document.getElementById('enx-variedade').value;
+  const local = document.getElementById('enx-local').value;
+  const status = document.getElementById('enx-status').value;
+  const obs = document.getElementById('enx-obs').value;
+
+  if (!data || !frutiferaId || !portaEnxerto || !variedade) {
+    mostrarToast('Preencha data, frutífera, porta-enxerto e variedade!', true);
+    return;
+  }
+
+  const f = getFrutiferaById(frutiferaId);
+
+  const registro = {
+    id: Date.now().toString(),
+    numero: numero || proximoNumeroEnxertia(),
+    data: data,
+    frutifera_id: frutiferaId,
+    frutifera_nome: f ? f.nome : frutiferaId,
+    frutifera_emoji: f ? f.emoji : '🌳',
+    porta_enxerto: portaEnxerto,
+    variedade: variedade,
+    local: local,
+    status: status,
+    observacoes: obs
+  };
+
+  const registros = carregarDoStorage(STORAGE_KEY_ENXERTIA);
+  registros.unshift(registro);
+  const ok = salvarNoStorage(registros, STORAGE_KEY_ENXERTIA);
+
+  if (!ok) {
+    mostrarToast('Erro ao salvar a enxertia. Espaço de armazenamento pode estar cheio.', true);
+    return;
+  }
+
+  fecharFormEnxertiaDireto();
+  mostrarToast('✅ Enxertia registrada com sucesso!');
+  carregarEnxertias();
+}
+
+function carregarEnxertias() {
+  const registros = carregarDoStorage(STORAGE_KEY_ENXERTIA);
+  renderizarEnxertias(registros);
+}
+
+function statusEnxertiaInfo(status) {
+  if (status === 'pegou') return { texto: 'Pegou ✓', cls: 'status-colhido' };
+  if (status === 'nao-pegou') return { texto: 'Não pegou', cls: 'status-colher' };
+  return { texto: 'Em observação', cls: 'status-crescendo' };
+}
+
+function renderizarEnxertias(registros) {
+  const lista = document.getElementById('enxertia-lista');
+
+  if (registros.length === 0) {
+    lista.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔗</div>' +
+      '<p>Nenhuma enxertia registrada ainda.<br>Use o botão acima para registrar sua primeira enxertia!</p></div>';
+    return;
+  }
+
+  lista.innerHTML = '';
+
+  registros.forEach(reg => {
+    const fmtData = d => new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit', month:'short', year:'numeric'});
+    const st = statusEnxertiaInfo(reg.status);
+
+    const card = document.createElement('div');
+    card.className = 'registro-card';
+    card.innerHTML =
+      '<div class="registro-card-top">' +
+        '<div class="registro-emoji">' + reg.frutifera_emoji + '</div>' +
+        '<div><div class="registro-titulo">#' + reg.numero + ' — ' + reg.frutifera_nome + '</div>' +
+        '<div class="registro-local">' + (reg.local || 'Sem localização') + '</div>' +
+        '<span class="status-chip ' + st.cls + '">' + st.texto + '</span></div>' +
+      '</div>' +
+      '<div class="registro-datas">' +
+        '<div class="data-item"><div class="data-label">Porta-enxerto</div><div class="data-valor" style="font-size:0.78rem">' + reg.porta_enxerto + '</div></div>' +
+        '<div class="data-item colheita-estimada"><div class="data-label">Variedade</div><div class="data-valor" style="font-size:0.78rem;color:var(--verde-escuro)">' + reg.variedade + '</div></div>' +
+      '</div>' +
+      '<div style="font-size:0.8rem;color:var(--texto-claro);margin-bottom:0.5rem">📅 Enxertado em ' + fmtData(reg.data) + '</div>' +
+      (reg.observacoes ? '<div class="registro-obs">' + reg.observacoes + '</div>' : '') +
+      '<div class="registro-acoes">' +
+        '<select onchange="atualizarStatusEnxertia(\'' + reg.id + '\', this.value)" style="flex:1;padding:7px;border-radius:7px;border:1.5px solid var(--creme-escuro);font-family:\'DM Sans\',sans-serif;font-size:0.8rem;color:var(--texto-medio)">' +
+          '<option value="observacao"' + (reg.status === 'observacao' ? ' selected' : '') + '>Em observação</option>' +
+          '<option value="pegou"' + (reg.status === 'pegou' ? ' selected' : '') + '>Pegou</option>' +
+          '<option value="nao-pegou"' + (reg.status === 'nao-pegou' ? ' selected' : '') + '>Não pegou</option>' +
+        '</select>' +
+        '<button class="btn-reg-acao danger" onclick="excluirEnxertia(\'' + reg.id + '\')">🗑 Excluir</button>' +
+      '</div>';
+    lista.appendChild(card);
+  });
+}
+
+function atualizarStatusEnxertia(id, novoStatus) {
+  const registros = carregarDoStorage(STORAGE_KEY_ENXERTIA);
+  const reg = registros.find(r => r.id === id);
+  if (reg) reg.status = novoStatus;
+  salvarNoStorage(registros, STORAGE_KEY_ENXERTIA);
+  mostrarToast('Status atualizado!');
+  carregarEnxertias();
+}
+
+function excluirEnxertia(id) {
+  if (!confirm('Excluir este registro de enxertia?')) return;
+  const registros = carregarDoStorage(STORAGE_KEY_ENXERTIA).filter(r => r.id !== id);
+  salvarNoStorage(registros, STORAGE_KEY_ENXERTIA);
+  mostrarToast('Registro removido.');
+  carregarEnxertias();
 }
 
 function mostrarToast(msg, erro) {
